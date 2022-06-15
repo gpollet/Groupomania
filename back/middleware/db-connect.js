@@ -12,7 +12,8 @@ const sequelize = new Sequelize(
   }
 )
 
-sequelize.sync( {force: true} )
+// sequelize.sync( {force: true} )
+// sequelize.sync()
 
 // Vérifie que la connexion à la DB est établie.
 sequelize

@@ -10,21 +10,14 @@ const userSchema = sequelize.define(
       unique: true,
     },
     password: { type: DataTypes.STRING(100), allowNull: false },
-    role: { type: DataTypes.TINYINT, default: 0, allowNull: true },
-    registration_date: {
-      type: DataTypes.DATE,
-      // allowNull: false,
-      default: DataTypes.NOW,
-    },
-    last_login: {
-      type: DataTypes.DATE,
-      // allowNull: false,
-      default: DataTypes.NOW,
-    },
+    role: { type: DataTypes.TINYINT, defaultValue: 0, allowNull: false },
   },
   {
-    tableName: "user2",
+    tableName: "user",
   }
 )
+
+// sequelize.sync( {force: true} )
+sequelize.sync
 
 module.exports = sequelize.model("User", userSchema)

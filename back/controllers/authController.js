@@ -8,7 +8,6 @@ const userToken = process.env.USER_TOKEN
 
 // Chiffre le mot de passe de l'utilisateur, puis l'enregistre dans la base de donnée avec son email.
 exports.signup = (req, res, next) => {
-  console.log(req.body)
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -29,7 +28,7 @@ exports.signup = (req, res, next) => {
 
 // Vérifie qu'utilisateur existe. Si existe, vérifie que mot de passe est correct. Si utilisateur existe ET mdp correct, renvoie un token associé à cet utilisateur.
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  User.findOne({where: { email: req.body.email }})
     .then((user) => {
       if (!user) {
         return next(res.status(401))
@@ -41,8 +40,8 @@ exports.login = (req, res, next) => {
             return next(res.status(401))
           }
           res.status(200).json({
-            userId: user._id,
-            token: jwt.sign({ userId: user._id }, `${userToken}`, {
+            userId: user.id,
+            token: jwt.sign({ userId: user.id }, `${userToken}`, {
               expiresIn: "24h",
             }),
           })
