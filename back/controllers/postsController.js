@@ -16,7 +16,7 @@ exports.getAllPosts = (req, res) => {
 
 // Demande à la DB de renvoyer le document de la collection Post qui a un id identique à l'id de l'URI
 exports.getPost = (req, res) => {
-  Post.findOne({where: {id: req.params.id}})
+  Post.findOne({ where: { id: req.params.id } })
     .then((post) => {
       res.status(200).json(post)
     })
@@ -28,25 +28,26 @@ exports.getPost = (req, res) => {
 }
 
 // Crée un nouveau post avec l'id de l'utilisateur, les informations qu'il saisit sur la page d'envoi, le chemin d'accès à l'image reçue, et initialise le nombre de likes à 0. Array d'utilisateurs ayant liké est donc de facto vide aussi.
-exports.createPost = (req, res) => {
+exports.createPost = async (req, res) => {
   let imageUrl
-  const postObject = req.body
-  const getImage = () => {
-    if (req.file) {
-      return (imageUrl = `${req.protocol}://${req.get(
-        "host"
-      )}/images/${req.file.filename}`)
-    } else {
-      return (imageUrl = "")
-    }
+  // const postObject = req.body
+  if (req.file) {
+    imageUrl = `${req.protocol}://${req.get("host")}/images/${
+      req.file.filename
+    }`
+  } else {
+    imageUrl = ""
   }
-  getImage()
-  const post = Post.create({
-    ...postObject,
+  await Post.create({
+    userId: req.body.userId,
+    text_content: req.body.text_content,
+    likes: 0,
     image_url: imageUrl,
   })
     .then(() => {
-      res.status(201).json({ message: "Le post a bien été créé." })
+      res.status(201).json({
+        message: "Le post a bien été créé.",
+      })
     })
     .catch((error) => {
       res.status(400).json({
@@ -57,61 +58,81 @@ exports.createPost = (req, res) => {
 
 // Vérifie si un fichier est joint. Si oui, convertit le corps de la requête pour y insérer l'url de l'image, si non met à jour les champs avec les nouvelles informations fournies par l'utilisateur.
 exports.updatePost = (req, res, next) => {
-  Post.findById(req.params.id).then((post) => {
+  Post.findOne({
+    where: { id: req.params.id },
+  }).then((post) => {
     if (post.userId !== req.body.userId) {
       return next(res.status(401))
-    }
-    if (req.file) {
-      const imgPath = post.imageUrl.replace(
-        "http://localhost:3000",
-        "."
-      )
-      fs.unlink(imgPath, (err) => {
-        if (err) {
-          console.error(err)
-        } else {
-          console.log("Image supprimée")
-        }
-      })
-    }
-  })
-  const postObject = req.file
-    ? {
-        ...JSON.parse(req.body.post),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
+    } else {
+      if (req.file) {
+        const imgPath = post.imageUrl.replace(
+          "http://localhost:3000",
+          "."
+        )
+        fs.unlink(imgPath, (err) => {
+          if (err) {
+            console.error(err)
+          } else {
+            console.log("Image supprimée")
+          }
+        })
       }
-    : { ...req.body }
-  Post.findByPkAndUpdate(req.params.id, {
-    ...postObject,
-    id: req.params.id,
+      const postObject = req.file
+        ? {
+            ...JSON.parse(req.body),
+            imageUrl: `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`,
+          }
+        : { ...req.body }
+      Post.upsert({
+        id: req.params.id,
+        ...postObject,
+      })
+        .then(() =>
+          res.status(200).json({ message: "Post mis à jour." })
+        )
+        .catch((error) => res.status(400).json({ error }))
+    }
   })
-    .then(() => res.status(200).json({}))
-    .catch((error) => res.status(400).json({ error }))
 }
 
 // Trouve le post ayant un id correspondant à l'id de la requête, et le supprime.
-exports.deletePost = async (req, res, next) => {
-  Post.destroy({where: {id: req.params.id}})
-    ((post) => {
+exports.deletePost = (req, res, next) => {
+  Post.findOne({
+    where: { id: req.params.id },
+  })
+    .then((post) => {
       if (post.userId !== req.body.userId) {
         return next(res.status(401))
+      } else {
+        Post.destroy({ where: { id: req.params.id } })
+          .then((post) => {
+            if (post.imageUrl !== undefined) {
+              const imgPath = post.imageUrl.replace(
+                "http://localhost:3000",
+                "."
+              )
+              fs.unlink(imgPath, (err) => {
+                if (err) {
+                  console.error(err)
+                } else {
+                  console.log("Image supprimée")
+                }
+              })
+            }
+          })
+          .then(() => {
+            res
+              .status(200)
+              .json({ message: "Le post a bien été supprimé." })
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
+            })
+          })
       }
-      const imgPath = post.imageUrl.replace(
-        "http://localhost:3000",
-        "."
-      )
-      fs.unlink(imgPath, (err) => {
-        if (err) {
-          console.error(err)
-        } else {
-          console.log("Image supprimée")
-        }
-      })
-    })
-    .then(() => {
-      res.status(200).json()
     })
     .catch((error) => {
       res.status(400).json({
