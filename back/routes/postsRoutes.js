@@ -1,17 +1,18 @@
 const express = require("express")
 const router = express.Router()
 const postsController = require("./../controllers/postsController")
+const authPosts = require("../middleware/authPosts")
 const multer = require("../middleware/multer-config")
 
 router
   .route("/")
   .get(postsController.getAllPosts)
-  .post(multer, postsController.createPost)
+  .post(authPosts, multer, postsController.createPost)
 
 router
   .route("/:id")
-  .put(multer, postsController.updatePost)
-  .delete(postsController.deletePost)
+  .put(authPosts, multer, postsController.updatePost)
+  .delete(authPosts, postsController.deletePost)
 
 router.route("/:id").get(postsController.getPost)
 
