@@ -16,7 +16,7 @@ exports.getAllPosts = (req, res) => {
 
 // Demande à la DB de renvoyer le document de la collection Post qui a un id identique à l'id de l'URI
 exports.getPost = (req, res) => {
-  Post.findByPk(req.params.id)
+  Post.findOne({where: {id: req.params.id}})
     .then((post) => {
       res.status(200).json(post)
     })
@@ -29,7 +29,6 @@ exports.getPost = (req, res) => {
 
 // Crée un nouveau post avec l'id de l'utilisateur, les informations qu'il saisit sur la page d'envoi, le chemin d'accès à l'image reçue, et initialise le nombre de likes à 0. Array d'utilisateurs ayant liké est donc de facto vide aussi.
 exports.createPost = (req, res) => {
-  console.log(req.body)
   let imageUrl
   const postObject = req.body
   const getImage = () => {

@@ -12,8 +12,7 @@ router
   .route("/:id")
   .put(multer, postsController.updatePost)
   .delete(postsController.deletePost)
-
-router.route("/:id").get(postsController.getPost)
+  .get(postsController.getPost)
 
 router.route("/:id/like").post(postsController.likePost)
 
