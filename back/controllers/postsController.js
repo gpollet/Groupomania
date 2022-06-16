@@ -3,7 +3,7 @@ const Post = require("../models/postModel")
 
 // Demande à la DB de renvoyer tous les documents de la collection Post.
 exports.getAllPosts = (req, res) => {
-  Post.find()
+  Post.findAll()
     .then((posts) => {
       res.status(200).json(posts)
     })
@@ -34,11 +34,9 @@ exports.createPost = (req, res) => {
   const postObject = req.body
   const getImage = () => {
     if (req.file) {
-      return (imageUrl = `${
-        req.protocol
-      }://${req.get("host")}/images/${
-        req.file.filename
-      }`)
+      return (imageUrl = `${req.protocol}://${req.get(
+        "host"
+      )}/images/${req.file.filename}`)
     } else {
       return (imageUrl = "")
     }
@@ -47,12 +45,9 @@ exports.createPost = (req, res) => {
   const post = Post.create({
     ...postObject,
     image_url: imageUrl,
-    // image_url: `${req.protocol}://${req.get("host")}/images/${
-    //   req.file.filename
-    // }`,
   })
     .then(() => {
-      res.status(201).json({})
+      res.status(201).json({ message: "Le post a bien été créé." })
     })
     .catch((error) => {
       res.status(400).json({
@@ -84,9 +79,9 @@ exports.updatePost = (req, res, next) => {
   const postObject = req.file
     ? {
         ...JSON.parse(req.body.post),
-        imageUrl: `${req.protocol}://${req.get(
-          "host"
-        )}/images/${req.file.filename}`,
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
+          req.file.filename
+        }`,
       }
     : { ...req.body }
   Post.findByPkAndUpdate(req.params.id, {
@@ -94,15 +89,13 @@ exports.updatePost = (req, res, next) => {
     id: req.params.id,
   })
     .then(() => res.status(200).json({}))
-    .catch((error) =>
-      res.status(400).json({ error })
-    )
+    .catch((error) => res.status(400).json({ error }))
 }
 
 // Trouve le post ayant un id correspondant à l'id de la requête, et le supprime.
-exports.deletePost = (req, res, next) => {
-  Post.findByPkAndDelete(req.params.id)
-    .then((post) => {
+exports.deletePost = async (req, res, next) => {
+  Post.destroy({where: {id: req.params.id}})
+    ((post) => {
       if (post.userId !== req.body.userId) {
         return next(res.status(401))
       }
@@ -138,11 +131,7 @@ exports.likePost = (req, res) => {
           $inc: { likes: 1 },
         })
       } else if (req.body.like === 0) {
-        if (
-          post.usersLiked.includes(
-            req.body.userId
-          )
-        ) {
+        if (post.usersLiked.includes(req.body.userId)) {
           return post.update({
             $pull: {
               usersLiked: req.body.userId,
