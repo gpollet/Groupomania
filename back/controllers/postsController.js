@@ -60,13 +60,11 @@ exports.createPost = async (req, res) => {
 exports.updatePost = (req, res, next) => {
   Post.findOne({
     where: { id: req.params.id },
-  }).then((post) => {
-    if (post.userId !== req.body.userId) {
-      return next(res.status(401))
-    } else {
+  })
+    .then((post) => {
       if (req.file) {
-        const imgPath = post.imageUrl.replace(
-          "http://localhost:3000",
+        const imgPath = post.image_url.replace(
+          "http://127.0.0.1:3000",
           "."
         )
         fs.unlink(imgPath, (err) => {
@@ -79,12 +77,17 @@ exports.updatePost = (req, res, next) => {
       }
       const postObject = req.file
         ? {
-            ...JSON.parse(req.body),
-            imageUrl: `${req.protocol}://${req.get("host")}/images/${
+            userId: post.userId,
+            text_content: req.body.text_content,
+            image_url: `${req.protocol}://${req.get("host")}/images/${
               req.file.filename
             }`,
           }
-        : { ...req.body }
+        : {
+            userId: post.userId,
+            text_content: req.body.text_content,
+            image_url: post.imageUrl,
+          }
       Post.upsert({
         id: req.params.id,
         ...postObject,
@@ -93,8 +96,8 @@ exports.updatePost = (req, res, next) => {
           res.status(200).json({ message: "Post mis à jour." })
         )
         .catch((error) => res.status(400).json({ error }))
-    }
-  })
+    })
+    .catch((error) => res.status(400).json({ error }))
 }
 
 // Trouve le post ayant un id correspondant à l'id de la requête, et le supprime.
