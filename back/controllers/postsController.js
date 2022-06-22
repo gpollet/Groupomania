@@ -157,9 +157,12 @@ exports.likePost = (req, res) => {
   Post.findOne({
     where: { id: req.params.id },
   })
-    .then((post) => {
-      if (req.body.like == 1) {
-        
+  .then((post) => {
+    if (req.body.like) {
+        Like.create({
+          userId: req.user.userId,
+          likedPost: req.params.id,
+        })
         return post.increment("likes")
       } else if (req.body.like == 0) {
         if (post.usersLiked.includes(req.body.userId)) {

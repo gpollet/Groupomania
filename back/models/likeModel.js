@@ -6,6 +6,9 @@ const postSchema = require("./postModel")
 const likeSchema = sequelize.define("Like", {
   userId: { type: DataTypes.INTEGER, allowNull: false },
   likedPost: { type: DataTypes.INTEGER, allowNull: false },
+},
+{
+  tableName: "user_like"
 })
 
 // Relationships

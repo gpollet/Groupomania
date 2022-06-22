@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
   try {
     const decodedToken = jwt.verify(token, userToken)
     const userId = decodedToken.userId
-    if (req.body.userId && req.body.userId !== userId) {
+    if (req.body.userId && req.body.userId != userId) {
       res.status(401).json({ error: error })
     } else {
       User.findOne({ where: { id: userId } }).then((user) => {

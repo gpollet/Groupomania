@@ -16,6 +16,6 @@ router
 
 router.route("/:id").get(postsController.getPost)
 
-router.route("/:id/like").post(postsController.likePost)
+router.route("/:id/like").post(authPosts, postsController.likePost)
 
 module.exports = router
