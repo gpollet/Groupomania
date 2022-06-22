@@ -28,7 +28,7 @@ exports.signup = (req, res, next) => {
 
 // Vérifie qu'utilisateur existe. Si existe, vérifie que mot de passe est correct. Si utilisateur existe ET mdp correct, renvoie un token associé à cet utilisateur.
 exports.login = (req, res, next) => {
-  User.findOne({where: { email: req.body.email }})
+  User.findOne({ where: { email: req.body.email } })
     .then((user) => {
       if (!user) {
         return next(res.status(401))

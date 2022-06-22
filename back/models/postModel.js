@@ -25,25 +25,11 @@ const postSchema = sequelize.define(
   }
 )
 
-// const likeSchema = sequelize.define("user_like", {
-//   user_id: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false,
-//   },
-//   liked_post: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false,
-//   },
-// })
-
 // Relationships
 postSchema.belongsTo(userSchema, {
   foreignKey: "userId",
   targetKey: "id"
 })
-// likeSchema.belongsTo(userSchema)
-
-// sequelize.sync( {force: true} )
 sequelize.sync
 
 module.exports = sequelize.model("Post", postSchema)
