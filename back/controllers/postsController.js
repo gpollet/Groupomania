@@ -62,7 +62,7 @@ exports.updatePost = (req, res, next) => {
     where: { id: req.params.id },
   })
     .then((post) => {
-      if (post.userId !== req.body.userId) {
+      if (post.userId !== req.user.userId) {
         if (req.user.role == 0) {
           return next(res.status(401))
         } else {
@@ -112,11 +112,12 @@ exports.deletePost = (req, res, next) => {
     where: { id: req.params.id },
   })
     .then((post) => {
-      if (post.userId !== req.body.userId) {
+      if (post.userId !== req.user.userId) {
         if (req.user.role == 0) {
           return next(res.status(401))
         } else {
-          Post.destroy({ where: { id: req.params.id } })
+          post
+            .destroy()
             .then((post) => {
               if (post.imageUrl !== undefined) {
                 const imgPath = post.imageUrl.replace(
@@ -159,11 +160,19 @@ exports.likePost = (req, res) => {
   })
     .then(async (post) => {
       if (req.body.like == 1) {
-        Like.create({
+        const like = await Like.findOne({
           userId: req.user.userId,
           likedPost: req.params.id,
         })
-        return post.increment("likes")
+        if (like) {
+          throw error
+        } else {
+          post.increment("likes")
+          Like.create({
+            userId: req.user.userId,
+            likedPost: req.params.id,
+          })
+        }
       } else if (req.body.like == 0) {
         const dislike = await Like.findOne({
           where: {
