@@ -157,22 +157,13 @@ exports.likePost = (req, res) => {
   Post.findOne({
     where: { id: req.params.id },
   })
-  .then((post) => {
-    // console.log(post)
-    console.log(req.body)
-    if (req.body.like === 1) {
-      return post.upsert({
-        // $push: { usersLiked: req.body.userId },
-        $inc: { likes: 1 },
-      })
-    } else if (req.body.like === 0) {
+    .then((post) => {
+      if (req.body.like == 1) {
+        
+        return post.increment("likes")
+      } else if (req.body.like == 0) {
         if (post.usersLiked.includes(req.body.userId)) {
-          return post.upsert({
-            $pull: {
-              usersLiked: req.body.userId,
-            },
-            $inc: { likes: -1 },
-          })
+          post.decrement("likes")
         }
       }
     })
