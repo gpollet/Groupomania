@@ -6,22 +6,35 @@
       <input type="text" name="text" id="new-text-content" placeholder="Votre texte..." v-model="text_content" />
     </p>
     <label for="image">Ajouter une image :</label>
-    <input type="file" name="image" accept="image/jpg, image/jpeg, image/png">
+    <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
     <button type="submit" @click.prevent="createPost()">Créer un post</button>
   </form>
 </template>
 
 <script setup>
 import axios from "axios"
+import { user } from "@/store/index"
 
-let user
-let text_content
-let imageUrl = null
+let text_content = ""
+// let file
+
+let formData = new FormData()
+
+function getAddedFile(e) {
+  // file = e.target.files[0]
+  formData.append('image', e.target.files[0])
+  // formData.append('text_content', this.text_content)
+  // console.log(file)
+  // console.log(formData)
+}
+
 
 function createPost() {
-  axios.post("http://127.0.0.1:3000/api/posts", {
-    text_content: text_content, imageUrl: imageUrl
-  })
+  // console.log(text_content)
+  formData.append('text_content', this.text_content)
+  axios.post("http://127.0.0.1:3000/api/posts",
+    formData
+    , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
 }
 </script>
 
