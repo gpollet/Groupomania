@@ -21,6 +21,7 @@
 <script>
 import axios from "axios"
 import moment from 'moment'
+import { user } from "@/store/index"
 
 export default {
   data() {
@@ -30,7 +31,7 @@ export default {
   },
   methods: {
     likePost(postId) {
-      axios.post(`http://127.0.0.1:3000/api/posts/${postId}/like`).then((response)).catch((err) => {
+      axios.post(`http://127.0.0.1:3000/api/posts/${postId}/like`, { userId: user.userId, like: 1 }, { headers: { "Authorization": "Bearer " + user.token } }).then((response)).catch((err) => {
         console.log(err)
       })
     }
