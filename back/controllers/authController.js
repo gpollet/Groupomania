@@ -8,26 +8,31 @@ const userToken = process.env.USER_TOKEN
 
 // Chiffre le mot de passe de l'utilisateur, puis l'enregistre dans la base de donnée avec son email.
 exports.signup = (req, res, next) => {
-  bcrypt
-    .hash(req.body.password, 10)
-    .then((hash) => {
-      const user = User.create({
-        email: req.body.email,
-        password: hash,
+  if (req.body.email && req.body.password) {
+    bcrypt
+      .hash(req.body.password, 10)
+      .then((hash) => {
+        const user = User.create({
+          email: req.body.email,
+          password: hash,
+        })
+          .then(() =>
+            res.status(201).json({
+              message: "Utilisateur créé",
+            })
+          )
+          // Si utilisateur existe déjà : erreur 400
+          .catch((error) => res.status(400).json({ error }))
       })
-        .then(() =>
-          res.status(201).json({
-            message: "Utilisateur créé",
-          })
-        )
-        // Si utilisateur existe déjà : erreur 400
-        .catch((error) => res.status(400).json({ error }))
-    })
-    .catch((error) => res.status(500).json({ error }))
+      .catch((error) => res.status(500).json({ error }))
+  } else {
+    res.status(500).json()
+  }
 }
 
 // Vérifie qu'utilisateur existe. Si existe, vérifie que mot de passe est correct. Si utilisateur existe ET mdp correct, renvoie un token associé à cet utilisateur.
 exports.login = (req, res, next) => {
+  if (req.body.email && req.body.password) {
   User.findOne({ where: { email: req.body.email } })
     .then((user) => {
       if (!user) {
@@ -48,5 +53,7 @@ exports.login = (req, res, next) => {
         })
         .catch((error) => res.status(500).json({ error }))
     })
-    .catch((error) => res.status(500).json({ error }))
+    .catch((error) => res.status(500).json({ error }))} else {
+      res.status(500).json()
+    }
 }
