@@ -1,13 +1,16 @@
 <template>
-  <nav>
-    <router-link to="/">Accueil</router-link> |
-    <router-link to="/auth">Connexion</router-link>
-  </nav>
+  <TheHeader></TheHeader>
   <router-view />
 </template>
 
+<script setup>
+import TheHeader from "@/components/TheHeader.vue"
+</script>
+
 <style lang="scss">
-$primary-color: #fd2d01;
-$secondary-color: #ffd7d7;
-$tertiary-color: #4e5166;
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+#app {
+  font-family: Lato;
+}
 </style>
