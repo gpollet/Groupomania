@@ -14,17 +14,34 @@
 
 <script setup>
 import axios from "axios"
+import {user} from "@/store/index"
+// import {ref} from 'vue'
 
 let username
 let password
+// const user = ref({
+//   userId: null,
+//   token: null,
+// })
 
 function login() {
   axios.post("http://127.0.0.1:3000/api/auth/login", {
     email: this.username, password: this.password
+  }, { "Content-Type": "application/json" }).then((res) => {
+    user.userId = res.data.userId
+    user.token = res.data.token
   })
 }
 </script>
 
 
 <style scoped lang="scss">
+button {
+  width: 20em;
+  height: 4em;
+
+  &:hover {
+    @include tertiary;
+  }
+}
 </style>

@@ -13,15 +13,16 @@
 
 <script setup>
 import axios from "axios"
+import { user } from "@/store/index"
 
-let user
-let text_content
-let imageUrl = null
+console.log(user.token)
+let text_content = ""
+let imageUrl = ""
 
 function createPost() {
   axios.post("http://127.0.0.1:3000/api/posts", {
     text_content: text_content, imageUrl: imageUrl
-  })
+  }, { headers: { "Authorization": "Bearer " + user.token } })
 }
 </script>
 
