@@ -1,8 +1,11 @@
 <template>
   <div>
+    <ul v-for="test of tests">
+      <p>{{ test }}</p>
+    </ul>
     <ul v-if="posts && posts.length" v-for="post of posts" :key="post.id">
       <article>
-        <time>Publié {{ post.createdAt }}</time>
+        <p>{{ post.User.firstName }} {{ post.User.lastName }} <time>({{ post.createdAt }})</time></p>
         <p class="last-updated" v-if="post.createdAt !== post.updatedAt"><time>Modifié {{ post.updatedAt }}</time></p>
         <p>{{ post.text_content }}</p>
         <img v-if="post.image_url" :src="post.image_url">
@@ -13,12 +16,14 @@
               d="M0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84.02L256 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 .0003 232.4 .0003 190.9L0 190.9z" />
           </svg>{{ post.likes }}
         </p>
+        <button>Modifier</button>
+        <button>Supprimer</button>
       </article>
     </ul>
   </div>
 </template>
 
-<script>
+<!-- <script>
 import axios from "axios"
 import moment from 'moment'
 import { user } from "@/store/index"
@@ -31,10 +36,10 @@ export default {
   },
   methods: {
     likePost(postId) {
-      axios.post(`http://127.0.0.1:3000/api/posts/${postId}/like`, { userId: user.userId, like: 1 }, { headers: { "Authorization": "Bearer " + user.token } }).then((response)).catch((err) => {
+      axios.post(`http://127.0.0.1:3000/api/posts/${postId}/like`, { userId: user.userId, like: 1 }, { headers: { "Authorization": "Bearer " + user.token } }).then((axios.get(`http://127.0.0.1:3000/api/posts/${postId}`))).catch((err) => {
         console.log(err)
       })
-    }
+    },
   },
   created() {
     axios
@@ -52,9 +57,45 @@ export default {
   },
   name: "HelloWorld",
 }
+</script> -->
+
+<script setup>
+import axios from "axios"
+import moment from 'moment'
+import { user } from "@/store/index"
+
+let posts = {}
+
+let tests = {
+  testa: "a",
+  testb: "b",
+  testc: "c",
+}
+
+const getPosts =
+  axios.get("http://127.0.0.1:3000/api/posts")
+    .then((response) => {
+      // console.log(response.data)
+      response.data.forEach(element => {
+        element.createdAt = moment(element.createdAt).fromNow()
+        element.updatedAt = moment(element.updatedAt).fromNow()
+      })
+      return posts = response.data.reverse()
+      console.log(posts)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+
+
+function likePost(postId) {
+  axios.post(`http://127.0.0.1:3000/api/posts/${postId}/like`, { userId: user.userId, like: 1 }, { headers: { "Authorization": "Bearer " + user.token } }).then((axios.get(`http://127.0.0.1:3000/api/posts/${postId}`))).catch((err) => {
+    console.log(err)
+  })
+}
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 ul {
   border: 2px solid black;

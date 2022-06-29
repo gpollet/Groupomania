@@ -1,6 +1,6 @@
 <template>
-  <h2>Nouveau post</h2>
-  <form method="post" action="http://127.0.0.1:3000/api/posts">
+  <h2 v-if="user.userId && user.token">Nouveau post</h2>
+  <form method="post" action="http://127.0.0.1:3000/api/posts" v-if="user.userId && user.token">
     <p>
       <label for="text">Texte : </label>
       <input type="text" name="text" id="new-text-content" placeholder="Votre texte..." v-model="text_content" />

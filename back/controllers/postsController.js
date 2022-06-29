@@ -1,10 +1,11 @@
 const fs = require("fs")
 const Post = require("../models/postModel")
 const Like = require("../models/likeModel")
+const User = require("../models/userModel")
 
 // Demande à la DB de renvoyer tous les documents de la collection Post.
 exports.getAllPosts = (req, res) => {
-  Post.findAll()
+  Post.findAll({ include: [{ model: User, required: true }] })
     .then((posts) => {
       res.status(200).json(posts)
     })
@@ -86,11 +87,13 @@ exports.updatePost = (req, res, next) => {
                 image_url: `${req.protocol}://${req.get(
                   "host"
                 )}/images/${req.file.filename}`,
+                userEdit: Date.now()
               }
             : {
                 userId: post.userId,
                 text_content: req.body.text_content,
                 image_url: post.imageUrl,
+                userEdit: Date.now()
               }
           Post.upsert({
             id: req.params.id,
@@ -154,24 +157,30 @@ exports.deletePost = (req, res, next) => {
 }
 
 // Trouve le post correspondant à l'id de la page, puis analyse le corps de la requête pour savoir si l'utilisation a liké ou annulé un like. Si l'utilisateur like, son id est enregistré dans un array et le compteur associé augmente de 1. S'il s'agit d'une annulation de like, supprime l'ID de l'utilisateur de l'array et diminue le nombre de like en question de 1.
-exports.likePost = (req, res) => {
+exports.likePost = (req, res, next) => {
   Post.findOne({
-    where: { id: req.params.id },
+    where: { id: req.params.id }
   })
     .then(async (post) => {
       if (req.body.like == 1) {
-        const like = await Like.findOne({
-          userId: req.user.userId,
-          likedPost: req.params.id,
+        const like = await Like.findOne({ where:
+          {userId: req.user.userId,
+          likedPost: req.params.id}
         })
         if (like) {
           throw error
+          next()
         } else {
           post.increment("likes")
           Like.create({
             userId: req.user.userId,
             likedPost: req.params.id,
           })
+            // .catch((error) => {
+            //   res.status(400).json({
+            //     error: error,
+            //   })
+            // })
         }
       } else if (req.body.like == 0) {
         const dislike = await Like.findOne({

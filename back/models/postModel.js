@@ -19,6 +19,9 @@ const postSchema = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    userEdit: {
+      type: DataTypes.DATE,
+    },
   },
   {
     tableName: "user_post",
@@ -28,7 +31,7 @@ const postSchema = sequelize.define(
 // Relationships
 postSchema.belongsTo(userSchema, {
   foreignKey: "userId",
-  targetKey: "id"
+  targetKey: "id",
 })
 sequelize.sync
 

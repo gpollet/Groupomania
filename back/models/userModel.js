@@ -9,8 +9,20 @@ const userSchema = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    firstName: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
     password: { type: DataTypes.STRING(100), allowNull: false },
-    role: { type: DataTypes.TINYINT, defaultValue: 0, allowNull: false },
+    role: {
+      type: DataTypes.TINYINT,
+      defaultValue: 0,
+      allowNull: false,
+    },
   },
   {
     tableName: "user",

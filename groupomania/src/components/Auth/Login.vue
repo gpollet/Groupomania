@@ -30,18 +30,12 @@ function login() {
   }, { "Content-Type": "application/json" }).then((res) => {
     user.userId = res.data.userId
     user.token = res.data.token
+    console.log(user.userId)
   })
 }
 </script>
 
 
 <style scoped lang="scss">
-button {
-  width: 20em;
-  height: 4em;
 
-  &:hover {
-    @include tertiary;
-  }
-}
 </style>
