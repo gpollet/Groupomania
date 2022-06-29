@@ -1,9 +1,6 @@
 <template>
   <div>
-    <ul v-for="test of tests">
-      <p>{{ test }}</p>
-    </ul>
-    <ul v-if="posts && posts.length" v-for="post of posts" :key="post.id">
+    <ul v-for="post of data.posts" :key="post.id">
       <article>
         <p>{{ post.User.firstName }} {{ post.User.lastName }} <time>({{ post.createdAt }})</time></p>
         <p class="last-updated" v-if="post.createdAt !== post.updatedAt"><time>Modifié {{ post.updatedAt }}</time></p>
@@ -60,19 +57,14 @@ export default {
 </script> -->
 
 <script setup>
+import { reactive } from 'vue'
 import axios from "axios"
 import moment from 'moment'
 import { user } from "@/store/index"
 
-let posts = {}
+let data = reactive({ posts: {} })
 
-let tests = {
-  testa: "a",
-  testb: "b",
-  testc: "c",
-}
-
-const getPosts =
+const getPosts = async () => {
   axios.get("http://127.0.0.1:3000/api/posts")
     .then((response) => {
       // console.log(response.data)
@@ -80,12 +72,15 @@ const getPosts =
         element.createdAt = moment(element.createdAt).fromNow()
         element.updatedAt = moment(element.updatedAt).fromNow()
       })
-      return posts = response.data.reverse()
-      console.log(posts)
+      data.posts = response.data.reverse()
+      // console.log(posts)
     })
     .catch((err) => {
       console.log(err)
     })
+}
+
+getPosts()
 
 
 function likePost(postId) {

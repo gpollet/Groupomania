@@ -6,37 +6,10 @@
         @click="displaySignup()" :class="{ active_button: !state.loginActive }">Créer
         un compte</button>
     </p>
-    <component v-if="state.loginActive" :is="Login"></component>
-    <component v-else :is="Register"></component>
+    <login v-if="state.loginActive"></login>
+    <register v-else></register>
   </div>
 </template>
-
-<!-- <script>
-import Login from "@/components/Auth/Login.vue"
-import Register from "@/components/Auth/Register.vue"
-
-export default {
-  name: ["LoginForm", "RegisterForm"],
-  components: {
-    Login,
-    Register,
-  },
-  data() {
-    return {
-      loginActive: true,
-      buttonColor: "",
-    }
-  },
-  methods: {
-    displayLogin() {
-      return this.loginActive = true
-    },
-    displaySignup() {
-      return this.loginActive = false
-    },
-  }
-}
-</script> -->
 
 <script setup>
 import { reactive } from 'vue'
