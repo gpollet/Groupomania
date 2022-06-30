@@ -1,4 +1,5 @@
 <template>
+  <button type="submit" @click.prevent="createPost()">Créer un post</button>
   <div v-if="data.posts.length > 0">
     <ul v-for="post of data.posts" :key="post.id">
       <article>
@@ -36,15 +37,19 @@ import { reactive } from 'vue'
 import axios from "axios"
 import moment from 'moment'
 import { user } from "@/store/index"
+import { data } from "@/store/index"
+import { postContent } from "@/store/index"
+// import createPost from "@/components/Posts/CreatePost.vue"
 
-let data = reactive({ posts: {} })
+// let data = reactive({ posts: {} })
 
-let text_content = ""
 let displayEdit = reactive({ state: false })
 
 const getPosts = async () => {
   axios.get("http://127.0.0.1:3000/api/posts")
     .then((response) => {
+      moment.locale(navigator.language)
+      // Convertit les dates de la DB pour les afficher dans la langue de l'utilisateur (selon le language de son navigateur)
       response.data.forEach(element => {
         element.createdAt = moment(element.createdAt).fromNow()
         if (element.userEdit !== null) {
@@ -59,7 +64,19 @@ const getPosts = async () => {
 }
 getPosts()
 
-
+const createPost = async () => {
+  let formData = new FormData()
+  formData.append('text_content', postContent.text_content)
+  formData.append('image', postContent.image)
+  await axios.post("http://127.0.0.1:3000/api/posts",
+    formData
+    , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
+    .then(() => {
+      postContent.text_content = null
+      postContent.image = null
+      getPosts()
+    })
+}
 
 async function likePost(post) {
   if (user.userId) {
@@ -71,14 +88,14 @@ async function likePost(post) {
             { userId: user.userId, like: 0 },
             { headers: { "Authorization": "Bearer " + user.token } })
             .then(() => {
-              post.likes--
+              getPosts()
             })
         } else {
           axios.post(`http://127.0.0.1:3000/api/posts/${post.id}/like`,
             { userId: user.userId, like: 1 },
             { headers: { "Authorization": "Bearer " + user.token } })
             .then(() => {
-              post.likes++
+              getPosts()
             })
         }
       })
@@ -90,6 +107,7 @@ async function likePost(post) {
   }
 }
 
+// TODO: Impossible de supprimer un poste s'il a été liké
 async function deletePost(postId, userId) {
   if (user.role == 1 || user.userId && user.userId == userId) {
     await axios.delete(`http://127.0.0.1:3000/api/posts/${postId}`, { headers: { "Authorization": `Bearer ${user.token}` } })

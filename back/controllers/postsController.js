@@ -111,41 +111,48 @@ exports.updatePost = (req, res, next) => {
 
 // Trouve le post ayant un id correspondant à l'id de la requête, et le supprime.
 exports.deletePost = (req, res, next) => {
-  Post.findOne({
-    where: { id: req.params.id },
-  })
-    .then((post) => {
-      if (req.user.role == 0 && post.userId !== req.user.userId) {
-        return next(res.status(401))
-      } else {
-        post
-          .destroy()
-          .then((post) => {
-            if (post.image_url !== "") {
-              const imgPath = post.image_url.replace(
-                "http://127.0.0.1:3000",
-                "."
-              )
-              fs.unlink(imgPath, (err) => {
-                if (err) {
-                  console.error(err)
-                } else {
-                  console.log("Image supprimée")
-                }
-              })
-            }
-          })
-          .then(() => {
-            res
-              .status(200)
-              .json({ message: "Le post a bien été supprimé." })
-          })
-          .catch((error) => {
-            res.status(400).json({
-              error: error,
+  Like.findAll({ where: { likedPost: req.params.id } })
+    .then((likes) => {
+      likes.forEach((like) => {
+        like.destroy()
+      })
+    })
+    .then(() => {
+      Post.findOne({
+        where: { id: req.params.id },
+      }).then((post) => {
+        if (req.user.role == 0 && post.userId !== req.user.userId) {
+          return next(res.status(401))
+        } else {
+          post
+            .destroy()
+            .then((post) => {
+              if (post.image_url !== "") {
+                const imgPath = post.image_url.replace(
+                  "http://127.0.0.1:3000",
+                  "."
+                )
+                fs.unlink(imgPath, (err) => {
+                  if (err) {
+                    console.error(err)
+                  } else {
+                    console.log("Image supprimée")
+                  }
+                })
+              }
             })
-          })
-      }
+            .then(() => {
+              res
+                .status(200)
+                .json({ message: "Le post a bien été supprimé." })
+            })
+            .catch((error) => {
+              res.status(400).json({
+                error: error,
+              })
+            })
+        }
+      })
     })
     .catch((error) => {
       res.status(400).json({

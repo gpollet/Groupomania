@@ -1,17 +1,17 @@
 <template>
-  <form method="post" action="http://127.0.0.1:3000/api/posts" v-if="user.userId && user.token">
+  <form method="post" action="http://127.0.0.1:3000/api/posts">
     <p>
       <label for="text">Texte : </label>
-      <input type="text" name="text" id="new-text-content" placeholder="Votre texte..." v-model="postContent.text_content" />
+      <input type="text" name="text" id="new-text-content" placeholder="Votre texte..."
+        v-model="postContent.text_content" />
     </p>
     <label for="image">Ajouter une image :</label>
-    <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">    
+    <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
   </form>
 </template>
 
 <script setup>
 import { postContent } from "@/store/index"
-import { user } from "@/store/index"
 
 function getAddedFile(e) {
   postContent.image = e.target.files[0]

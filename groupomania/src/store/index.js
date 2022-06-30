@@ -1,5 +1,4 @@
 import {reactive} from 'vue'
-import {ref} from 'vue'
 
 export const user = reactive({
   userId: null,
@@ -11,3 +10,5 @@ export const postContent = reactive({
   text_content: null,
   image: null,
 })
+
+export const data = reactive({ posts : {}})
