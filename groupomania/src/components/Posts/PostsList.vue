@@ -74,6 +74,7 @@ const createPost = async () => {
     .then(() => {
       postContent.text_content = null
       postContent.image = null
+
       getPosts()
     })
 }

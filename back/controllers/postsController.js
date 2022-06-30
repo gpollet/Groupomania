@@ -30,31 +30,37 @@ exports.getLikedPost = (req, res) => {
 }
 
 // Crée un nouveau post avec l'id de l'utilisateur, les informations qu'il saisit sur la page d'envoi, le chemin d'accès à l'image reçue, et initialise le nombre de likes à 0. Array d'utilisateurs ayant liké est donc de facto vide aussi.
-exports.createPost = async (req, res) => {
+exports.createPost = async (req, res, next) => {
   let imageUrl
-  if (req.file) {
-    imageUrl = `${req.protocol}://${req.get("host")}/images/${
-      req.file.filename
-    }`
+  if (req.body.text_content === "null") {
+    return res
+      .status(400)
+      .json("Le post doit obligatoirement contenir du texte.")
   } else {
-    imageUrl = ""
+    if (req.file) {
+      imageUrl = `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`
+    } else {
+      imageUrl = ""
+    }
+    await Post.create({
+      userId: req.user.userId,
+      text_content: req.body.text_content,
+      likes: 0,
+      image_url: imageUrl,
+    })
+      .then(() => {
+        res.status(201).json({
+          message: "Le post a bien été créé.",
+        })
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        })
+      })
   }
-  await Post.create({
-    userId: req.user.userId,
-    text_content: req.body.text_content,
-    likes: 0,
-    image_url: imageUrl,
-  })
-    .then(() => {
-      res.status(201).json({
-        message: "Le post a bien été créé.",
-      })
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      })
-    })
 }
 
 // Vérifie si un fichier est joint. Si oui, convertit le corps de la requête pour y insérer l'url de l'image, si non met à jour les champs avec les nouvelles informations fournies par l'utilisateur.
