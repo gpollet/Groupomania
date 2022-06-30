@@ -16,21 +16,15 @@ import axios from "axios"
 import { user } from "@/store/index"
 
 let text_content = ""
-// let file
 
 let formData = new FormData()
 
 function getAddedFile(e) {
-  // file = e.target.files[0]
   formData.append('image', e.target.files[0])
-  // formData.append('text_content', this.text_content)
-  // console.log(file)
-  // console.log(formData)
 }
 
 
 function createPost() {
-  // console.log(text_content)
   formData.append('text_content', this.text_content)
   axios.post("http://127.0.0.1:3000/api/posts",
     formData
@@ -38,7 +32,6 @@ function createPost() {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 #new-text-content {
   width: 50em;

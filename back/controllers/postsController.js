@@ -17,8 +17,8 @@ exports.getAllPosts = (req, res) => {
 }
 
 // Demande à la DB de renvoyer le document de la collection Post qui a un id identique à l'id de l'URI
-exports.getPost = (req, res) => {
-  Post.findOne({ where: { id: req.params.id } })
+exports.getLikedPost = (req, res) => {
+  Like.findAll({ where: { likedPost: req.params.id } })
     .then((post) => {
       res.status(200).json(post)
     })
@@ -87,13 +87,13 @@ exports.updatePost = (req, res, next) => {
                 image_url: `${req.protocol}://${req.get(
                   "host"
                 )}/images/${req.file.filename}`,
-                userEdit: Date.now()
+                userEdit: Date.now(),
               }
             : {
                 userId: post.userId,
                 text_content: req.body.text_content,
                 image_url: post.imageUrl,
-                userEdit: Date.now()
+                userEdit: Date.now(),
               }
           Post.upsert({
             id: req.params.id,
@@ -115,38 +115,36 @@ exports.deletePost = (req, res, next) => {
     where: { id: req.params.id },
   })
     .then((post) => {
-      if (post.userId !== req.user.userId) {
-        if (req.user.role == 0) {
-          return next(res.status(401))
-        } else {
-          post
-            .destroy()
-            .then((post) => {
-              if (post.imageUrl !== undefined) {
-                const imgPath = post.imageUrl.replace(
-                  "http://localhost:3000",
-                  "."
-                )
-                fs.unlink(imgPath, (err) => {
-                  if (err) {
-                    console.error(err)
-                  } else {
-                    console.log("Image supprimée")
-                  }
-                })
-              }
-            })
-            .then(() => {
-              res
-                .status(200)
-                .json({ message: "Le post a bien été supprimé." })
-            })
-            .catch((error) => {
-              res.status(400).json({
-                error: error,
+      if (req.user.role == 0 && post.userId !== req.user.userId) {
+        return next(res.status(401))
+      } else {
+        post
+          .destroy()
+          .then((post) => {
+            if (post.image_url !== undefined) {
+              const imgPath = post.image_url.replace(
+                "http://127.0.0.1:3000",
+                "."
+              )
+              fs.unlink(imgPath, (err) => {
+                if (err) {
+                  console.error(err)
+                } else {
+                  console.log("Image supprimée")
+                }
               })
+            }
+          })
+          .then(() => {
+            res
+              .status(200)
+              .json({ message: "Le post a bien été supprimé." })
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
             })
-        }
+          })
       }
     })
     .catch((error) => {
@@ -159,13 +157,15 @@ exports.deletePost = (req, res, next) => {
 // Trouve le post correspondant à l'id de la page, puis analyse le corps de la requête pour savoir si l'utilisation a liké ou annulé un like. Si l'utilisateur like, son id est enregistré dans un array et le compteur associé augmente de 1. S'il s'agit d'une annulation de like, supprime l'ID de l'utilisateur de l'array et diminue le nombre de like en question de 1.
 exports.likePost = (req, res, next) => {
   Post.findOne({
-    where: { id: req.params.id }
+    where: { id: req.params.id },
   })
     .then(async (post) => {
       if (req.body.like == 1) {
-        const like = await Like.findOne({ where:
-          {userId: req.user.userId,
-          likedPost: req.params.id}
+        const like = await Like.findOne({
+          where: {
+            userId: req.user.userId,
+            likedPost: req.params.id,
+          },
         })
         if (like) {
           throw error
@@ -176,11 +176,11 @@ exports.likePost = (req, res, next) => {
             userId: req.user.userId,
             likedPost: req.params.id,
           })
-            // .catch((error) => {
-            //   res.status(400).json({
-            //     error: error,
-            //   })
-            // })
+          // .catch((error) => {
+          //   res.status(400).json({
+          //     error: error,
+          //   })
+          // })
         }
       } else if (req.body.like == 0) {
         const dislike = await Like.findOne({

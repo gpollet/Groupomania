@@ -13,7 +13,7 @@
 import { user } from "@/store/index"
 
 function logout() {
-  user.userId = null,
+  user.userId = null
   user.token = null
 }
 </script>
@@ -24,10 +24,12 @@ nav {
   @include secondary;
 }
 
-a, #logout {
+a,
+#logout {
   font-size: 2em;
   @include secondary;
   text-decoration: none;
+  cursor: pointer;
 
   &:active {
     @include secondary;

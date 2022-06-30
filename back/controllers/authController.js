@@ -51,6 +51,7 @@ exports.login = (req, res, next) => {
               token: jwt.sign({ userId: user.id }, `${userToken}`, {
                 expiresIn: "24h",
               }),
+              role: user.role
             })
           })
           .catch((error) => res.status(500).json({ error }))
