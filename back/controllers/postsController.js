@@ -121,7 +121,7 @@ exports.deletePost = (req, res, next) => {
         post
           .destroy()
           .then((post) => {
-            if (post.image_url !== undefined) {
+            if (post.image_url !== "") {
               const imgPath = post.image_url.replace(
                 "http://127.0.0.1:3000",
                 "."

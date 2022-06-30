@@ -2,7 +2,7 @@
   <header>
     <img src="@/assets/logos/icon-left-font.png" alt="Logo groupomania" />
     <nav>
-      <router-link to="/">Accueil</router-link>
+      <router-link to="/" v-if="user.userId">Accueil</router-link>
       <router-link to="/login" v-if="!user.userId && !user.token">Connexion</router-link>
       <span id="logout" v-else @click="logout()">Se déconnecter</span>
     </nav>

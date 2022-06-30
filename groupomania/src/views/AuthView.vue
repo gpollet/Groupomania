@@ -2,11 +2,11 @@
   <div id="style">
     <h1>Connexion</h1>
     <p>
-      <button @click="displayLogin()" :class="{ active_button: state.loginActive }">Se connecter</button> <button
-        @click="displaySignup()" :class="{ active_button: !state.loginActive }">Créer
+      <button @click="displayLogin()" :class="{ active_button: loginActive.state }">Se connecter</button> <button
+        @click="displaySignup()" :class="{ active_button: !loginActive.state }">Créer
         un compte</button>
     </p>
-    <login v-if="state.loginActive"></login>
+    <login v-if="loginActive.state"></login>
     <register v-else></register>
   </div>
 </template>
@@ -15,15 +15,33 @@
 import { reactive } from 'vue'
 import Login from "@/components/Auth/Login.vue"
 import Register from "@/components/Auth/Register.vue"
+import router from "@/router";
+import { onMounted } from "vue";
+import { useRoute } from 'vue-router'
+import { user } from '@/store';
 
-const state = reactive({ loginActive: true })
+const route = useRoute()
+const loginActive = reactive({ state: null })
+
+onMounted(async () => {
+  await router.isReady()
+  if (!user.userId) {
+    if (route.path === "/login" || route.path === "/") {
+      displayLogin()
+    } else {
+      displaySignup
+    }
+  }
+})
 
 function displayLogin() {
-  state.loginActive = true
+  loginActive.state = true
+  router.push({ path: "/login" })
 }
 
 function displaySignup() {
-  state.loginActive = false
+  loginActive.state = false
+  router.push({ path: "/signup" })
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="data.posts.length > 0">
     <ul v-for="post of data.posts" :key="post.id">
       <article>
         <p>{{ post.User.firstName }} {{ post.User.lastName }} <time>({{ post.createdAt }})</time></p>
@@ -14,11 +14,20 @@
               d="M0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84.02L256 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 .0003 232.4 .0003 190.9L0 190.9z" />
           </svg>{{ post.likes }}
         </p>
-        <button>Modifier</button>
+        <button @click="displayEditForm()">Modifier</button>
+        <form v-if="displayEdit.state == true">
+          <p>
+            <label for="text">Texte : </label>
+            <input type="text" name="text" id="new-text-content" placeholder="Votre texte..." v-model="text_content" />
+          </p>
+        </form>
         <button v-if="post.userId == user.userId || user.role == 1"
           @click="deletePost(post.id, post.userId)">Supprimer</button>
       </article>
     </ul>
+  </div>
+  <div v-else>
+    <p>Aucun post n'a encore été créé.</p>
   </div>
 </template>
 
@@ -29,6 +38,9 @@ import moment from 'moment'
 import { user } from "@/store/index"
 
 let data = reactive({ posts: {} })
+
+let text_content = ""
+let displayEdit = reactive({ state: false })
 
 const getPosts = async () => {
   axios.get("http://127.0.0.1:3000/api/posts")
@@ -46,6 +58,8 @@ const getPosts = async () => {
     })
 }
 getPosts()
+
+
 
 async function likePost(post) {
   if (user.userId) {
@@ -83,9 +97,16 @@ async function deletePost(postId, userId) {
         getPosts()
       })
   }
-  // console.log(user.userId)
-  // console.log(postId)
-  // console.log(userId)
+}
+
+function displayEditForm() {
+  return displayEdit.state = !displayEdit.state
+}
+
+function editPost() {
+  if (user.role == 1 || user.userId && user.userId == userId) {
+
+  }
 }
 
 </script>
