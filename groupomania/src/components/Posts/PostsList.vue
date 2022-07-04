@@ -3,9 +3,13 @@
   <div v-if="data.posts.length > 0">
     <ul v-for="post of data.posts" :key="post.id">
       <article>
-        <p>{{ post.User.firstName }} {{ post.User.lastName }} <time>({{ post.createdAt }})</time></p>
-        <p class="last-updated" v-if="post.userEdit && post.createdAt !== post.userEdit"><time>Modifié {{ post.userEdit
-        }}</time></p>
+        <p>{{ post.User.firstName }} {{ post.User.lastName }} <span v-if="post.User.role === 1"
+            class="admin">[Admin]</span> <time>({{
+                post.createdAt
+            }})</time></p>
+        <span class="last-updated" v-if="post.userEdit && post.createdAt !== post.userEdit"><time>Modifié {{
+            post.userEdit
+        }}</time></span>
         <p>{{ post.text_content }}</p>
         <img v-if="post.image_url" :src="post.image_url">
         <p>
@@ -73,8 +77,8 @@ const postsForm = (async (axiosMethod, route) => {
       postContent.text_content = null
       postContent.image = null
       displayEdit.postId = null,
-      displayEdit.state = false,
-      getPosts()
+        displayEdit.state = false,
+        getPosts()
     })
 })
 
@@ -149,5 +153,9 @@ img {
 
 .last-updated {
   color: $tertiary-color;
+}
+
+.admin {
+  @include primary;
 }
 </style>

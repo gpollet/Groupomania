@@ -5,7 +5,15 @@ const User = require("../models/userModel")
 
 // Demande à la DB de renvoyer tous les documents de la collection Post.
 exports.getAllPosts = (req, res) => {
-  Post.findAll({ include: [{ model: User, required: true }] })
+  Post.findAll({
+    include: [
+      {
+        model: User,
+        attributes: ["firstName", "lastName", "role"],
+        required: true,
+      },
+    ],
+  })
     .then((posts) => {
       res.status(200).json(posts)
     })
