@@ -15,9 +15,6 @@ const likeSchema = sequelize.define("Like", {
 likeSchema.belongsTo(userSchema, {
   foreignKey: "userId",
   targetKey: "id"
-}, postSchema, {
-  foreignKey: "likedPost",
-  targetKey: "id"
 })
 sequelize.sync
 

@@ -14,6 +14,8 @@ exports.signup = (req, res, next) => {
       .then((hash) => {
         const user = User.create({
           email: req.body.email,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
           password: hash,
         })
           .then(() =>
@@ -33,27 +35,29 @@ exports.signup = (req, res, next) => {
 // Vérifie qu'utilisateur existe. Si existe, vérifie que mot de passe est correct. Si utilisateur existe ET mdp correct, renvoie un token associé à cet utilisateur.
 exports.login = (req, res, next) => {
   if (req.body.email && req.body.password) {
-  User.findOne({ where: { email: req.body.email } })
-    .then((user) => {
-      if (!user) {
-        return next(res.status(401))
-      }
-      bcrypt
-        .compare(req.body.password, user.password)
-        .then((correctPassword) => {
-          if (!correctPassword) {
-            return next(res.status(401))
-          }
-          res.status(200).json({
-            userId: user.id,
-            token: jwt.sign({ userId: user.id }, `${userToken}`, {
-              expiresIn: "24h",
-            }),
+    User.findOne({ where: { email: req.body.email } })
+      .then((user) => {
+        if (!user) {
+          return next(res.status(401))
+        }
+        bcrypt
+          .compare(req.body.password, user.password)
+          .then((correctPassword) => {
+            if (!correctPassword) {
+              return next(res.status(401))
+            }
+            res.status(200).json({
+              userId: user.id,
+              token: jwt.sign({ userId: user.id }, `${userToken}`, {
+                expiresIn: "24h",
+              }),
+              role: user.role
+            })
           })
-        })
-        .catch((error) => res.status(500).json({ error }))
-    })
-    .catch((error) => res.status(500).json({ error }))} else {
-      res.status(500).json()
-    }
+          .catch((error) => res.status(500).json({ error }))
+      })
+      .catch((error) => res.status(500).json({ error }))
+  } else {
+    res.status(500).json()
+  }
 }

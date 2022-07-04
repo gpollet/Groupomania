@@ -25,6 +25,6 @@ module.exports = (req, res, next) => {
       res.status(401).json({ error: error })
     }
   } else {
-    res.status(401).json()
+    res.status(401).json({message: "Erreur header authorization"})
   }
 }

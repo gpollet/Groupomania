@@ -1,10 +1,13 @@
 <template>
   <TheHeader></TheHeader>
-  <router-view />
+  <router-view v-if="user.userId" />
+  <AuthView v-else></AuthView>
 </template>
 
 <script setup>
-import TheHeader from "@/components/TheHeader.vue"
+import TheHeader from "@/components/UI/TheHeader.vue"
+import AuthView from "@/views/AuthView.vue"
+import { user } from "@/store/index"
 </script>
 
 <style lang="scss">

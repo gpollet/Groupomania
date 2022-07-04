@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize")
 const sequelize = require("../middleware/db-connect.js")
 const userSchema = require("../models/userModel")
+const likeSchema = require("../models/likeModel")
 
 const postSchema = sequelize.define(
   "Post",
@@ -19,6 +20,9 @@ const postSchema = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    userEdit: {
+      type: DataTypes.DATE,
+    },
   },
   {
     tableName: "user_post",
@@ -28,7 +32,13 @@ const postSchema = sequelize.define(
 // Relationships
 postSchema.belongsTo(userSchema, {
   foreignKey: "userId",
-  targetKey: "id"
+  targetKey: "id",
+})
+
+postSchema.hasOne(likeSchema, {
+  foreignKey: 'likedPost',
+  targetKey: 'id',
+  onDelete: 'cascade'
 })
 sequelize.sync
 
