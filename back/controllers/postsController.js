@@ -69,47 +69,45 @@ exports.updatePost = (req, res, next) => {
     where: { id: req.params.id },
   })
     .then((post) => {
-      if (post.userId !== req.user.userId) {
-        if (req.user.role == 0) {
-          return next(res.status(401))
-        } else {
-          if (req.file) {
-            const imgPath = post.image_url.replace(
-              "http://127.0.0.1:3000",
-              "."
-            )
-            fs.unlink(imgPath, (err) => {
-              if (err) {
-                console.error(err)
-              } else {
-                console.log("Image supprimée")
-              }
-            })
-          }
-          const postObject = req.file
-            ? {
-                userId: post.userId,
-                text_content: req.body.text_content,
-                image_url: `${req.protocol}://${req.get(
-                  "host"
-                )}/images/${req.file.filename}`,
-                userEdit: Date.now(),
-              }
-            : {
-                userId: post.userId,
-                text_content: req.body.text_content,
-                image_url: post.imageUrl,
-                userEdit: Date.now(),
-              }
-          Post.upsert({
-            id: req.params.id,
-            ...postObject,
+      if (req.user.role == 0 && post.userId !== req.user.userId) {
+        return next(res.status(401))
+      } else {
+        if (req.file) {
+          const imgPath = post.image_url.replace(
+            "http://127.0.0.1:3000",
+            "."
+          )
+          fs.unlink(imgPath, (err) => {
+            if (err) {
+              console.error(err)
+            } else {
+              console.log("Image supprimée")
+            }
           })
-            .then(() =>
-              res.status(200).json({ message: "Post mis à jour." })
-            )
-            .catch((error) => res.status(400).json({ error }))
         }
+        const postObject = req.file
+          ? {
+              userId: post.userId,
+              text_content: req.body.text_content,
+              image_url: `${req.protocol}://${req.get(
+                "host"
+              )}/images/${req.file.filename}`,
+              userEdit: Date.now(),
+            }
+          : {
+              userId: post.userId,
+              text_content: req.body.text_content,
+              image_url: post.imageUrl,
+              userEdit: Date.now(),
+            }
+        Post.upsert({
+          id: req.params.id,
+          ...postObject,
+        })
+          .then(() =>
+            res.status(200).json({ message: "Post mis à jour." })
+          )
+          .catch((error) => res.status(400).json({ error }))
       }
     })
     .catch((error) => res.status(400).json({ error }))

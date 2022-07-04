@@ -8,7 +8,6 @@
     <label for="image">Ajouter une image :</label>
     <input type="file" name="image" accept="image/jpg, image/jpeg, image/png"
       v-on:change="getAddedFile">
-
   </form>
 </template>
 

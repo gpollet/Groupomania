@@ -15,13 +15,10 @@
               d="M0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84.02L256 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 .0003 232.4 .0003 190.9L0 190.9z" />
           </svg>{{ post.likes }}
         </p>
-        <button @click="displayEditForm()">Modifier</button>
-        <form v-if="displayEdit.state == true">
-          <p>
-            <label for="text">Texte : </label>
-            <input type="text" name="text" id="new-text-content" placeholder="Votre texte..." v-model="text_content" />
-          </p>
-        </form>
+        <button @click="displayEditForm(post.id)">Modifier</button>
+        <create-post-form v-if="displayEdit.state == true && displayEdit.postId == post.id"></create-post-form>
+        <button type="submit" @click.prevent="editPost(post.id)"
+          v-if="displayEdit.state == true && displayEdit.postId == post.id">Envoyer</button>
         <button v-if="post.userId == user.userId || user.role == 1"
           @click="deletePost(post.id, post.userId)">Supprimer</button>
       </article>
@@ -39,11 +36,12 @@ import moment from 'moment'
 import { user } from "@/store/index"
 import { data } from "@/store/index"
 import { postContent } from "@/store/index"
-// import createPost from "@/components/Posts/CreatePost.vue"
+import createPostForm from "@/components/Posts/CreatePost.vue"
 
-// let data = reactive({ posts: {} })
-
-let displayEdit = reactive({ state: false })
+let displayEdit = reactive({
+  postId: null,
+  state: false
+})
 
 const getPosts = async () => {
   axios.get("http://127.0.0.1:3000/api/posts")
@@ -64,19 +62,33 @@ const getPosts = async () => {
 }
 getPosts()
 
-const createPost = async () => {
+const postsForm = (async (axiosMethod, route) => {
   let formData = new FormData()
   formData.append('text_content', postContent.text_content)
   formData.append('image', postContent.image)
-  await axios.post("http://127.0.0.1:3000/api/posts",
+  await axiosMethod(`${route}`,
     formData
     , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
     .then(() => {
       postContent.text_content = null
       postContent.image = null
-
+      displayEdit.postId = null,
+      displayEdit.state = false,
       getPosts()
     })
+})
+
+const createPost = async () => {
+  postsForm(axios.post, 'http://127.0.0.1:3000/api/posts')
+}
+
+function displayEditForm(postId) {
+  displayEdit.postId = postId
+  displayEdit.state = !displayEdit.state
+}
+
+function editPost(postId) {
+  postsForm(axios.put, `http://127.0.0.1:3000/api/posts/${postId}`)
 }
 
 async function likePost(post) {
@@ -108,23 +120,12 @@ async function likePost(post) {
   }
 }
 
-// TODO: Impossible de supprimer un poste s'il a été liké
 async function deletePost(postId, userId) {
   if (user.role == 1 || user.userId && user.userId == userId) {
     await axios.delete(`http://127.0.0.1:3000/api/posts/${postId}`, { headers: { "Authorization": `Bearer ${user.token}` } })
       .then(() => {
         getPosts()
       })
-  }
-}
-
-function displayEditForm() {
-  return displayEdit.state = !displayEdit.state
-}
-
-function editPost() {
-  if (user.role == 1 || user.userId && user.userId == userId) {
-
   }
 }
 
