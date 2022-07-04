@@ -13,7 +13,7 @@
 
 <script setup>
 import { postContent } from "@/store/index"
-import { ref, watch } from 'vue'
+import { reactive, watch } from 'vue'
 
 function getAddedFile(e) {
   postContent.image = e.target.files[0]
