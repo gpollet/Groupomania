@@ -14,7 +14,7 @@ router
   .put(authPosts, multer, postsController.updatePost)
   .delete(authPosts, postsController.deletePost)
 
-router.route("/:id").get(postsController.getLikedPost)
+router.route("/:id/like").get(postsController.getLikedPost)
 
 router.route("/:id/like").post(authPosts, postsController.likePost)
 

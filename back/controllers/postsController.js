@@ -11,7 +11,7 @@ exports.getAllPosts = (req, res) => {
         model: User,
         attributes: ["firstName", "lastName", "role"],
         required: true,
-      },
+      }
     ],
   })
     .then((posts) => {
@@ -188,7 +188,6 @@ exports.likePost = (req, res, next) => {
         })
         if (like) {
           throw error
-          next()
         } else {
           post.increment("likes")
           Like.create({

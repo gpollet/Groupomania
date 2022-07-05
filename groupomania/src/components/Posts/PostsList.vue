@@ -19,7 +19,7 @@
               d="M0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84.02L256 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 .0003 232.4 .0003 190.9L0 190.9z" />
           </svg>{{ post.likes }}
         </p>
-        <button @click="displayEditForm(post.id)">Modifier</button>
+        <button @click="displayEditForm(post.id)" v-if="post.userId == user.userId || user.role == 1">Modifier</button>
         <create-post-form v-if="displayEdit.state == true && displayEdit.postId == post.id"></create-post-form>
         <button type="submit" @click.prevent="editPost(post.id)"
           v-if="displayEdit.state == true && displayEdit.postId == post.id">Envoyer</button>
@@ -98,21 +98,21 @@ function editPost(postId) {
 async function likePost(post) {
   if (user.userId) {
     // Vérifie si utilisateur a déjà liké, pour adapter la valeur du like dans la requête
-    await axios.get(`http://127.0.0.1:3000/api/posts/${post.id}/`)
+    await axios.get(`http://127.0.0.1:3000/api/posts/${post.id}/like`)
       .then((res) => {
         if (res.data.some(post => post.userId == user.userId)) {
           axios.post(`http://127.0.0.1:3000/api/posts/${post.id}/like`,
             { userId: user.userId, like: 0 },
             { headers: { "Authorization": "Bearer " + user.token } })
             .then(() => {
-              getPosts()
+              post.likes--
             })
         } else {
           axios.post(`http://127.0.0.1:3000/api/posts/${post.id}/like`,
             { userId: user.userId, like: 1 },
             { headers: { "Authorization": "Bearer " + user.token } })
             .then(() => {
-              getPosts()
+              post.likes++
             })
         }
       })
