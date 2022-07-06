@@ -17,15 +17,16 @@
     </p>
     <div v-if="userId == user.userId || user.role == 1">
       <button @click="displayEditForm">Modifier</button>
-      <create-post-form v-if="displayState == true"><button type="submit" @click.prevent="editPost(postId)">Modifier le
-          post</button></create-post-form>
-      <button @click="deletePost(postId, userId)">Supprimer</button>
+      <create-post-form v-if="displayState == true" v-slot:edit-post>
+        <button type="submit" @click.prevent="editPost(postId)">Modifier le
+          post</button>
+      </create-post-form>
+      <button @click="deletePost(postId, userId)">Supprimer le post</button>
     </div>
   </article>
 </template>
 
     <script setup>
-import { reactive } from 'vue'
 import axios from "axios"
 import { user, postsForm } from "@/store/index"
 import createPostForm from "@/components/Posts/CreatePost.vue"
@@ -46,29 +47,9 @@ defineProps({
   displayState: Boolean
 })
 
-let displayEdit = {
-  postId: null,
-  state: false
-}
-
 function displayEditForm() {
   emit('displayEdit')
 }
-
-// const postsForm = (async (axiosMethod, route) => {
-//   let formData = new FormData()
-//   formData.append('text_content', postContent.text_content)
-//   formData.append('image', postContent.image)
-//   await axiosMethod(`${route}`,
-//     formData
-//     , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
-//     .then(() => {
-//       // postContent.text_content = null
-//       // postContent.image = null
-//       // displayEdit.postId = null,
-//       //   displayEdit.state = false
-//     })
-// })
 
 function editPost(postId) {
   postsForm(axios.put, `http://127.0.0.1:3000/api/posts/${postId}`).then(() => {

@@ -1,4 +1,5 @@
 <template>
+  <slot name="form-title"></slot>
   <form method="post" action="http://127.0.0.1:3000/api/posts">
     <p>
       <label for="text">Texte : </label>
@@ -6,9 +7,9 @@
         v-model="postContent.text_content" />
     </p>
     <label for="image">Ajouter une image :</label>
-    <input type="file" name="image" accept="image/jpg, image/jpeg, image/png"
-      v-on:change="getAddedFile">
-      <slot></slot>
+    <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
+    <slot name="new-post"></slot>
+    <slot name="edit-post"></slot>
   </form>
 </template>
 

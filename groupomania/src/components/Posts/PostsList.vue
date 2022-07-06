@@ -2,8 +2,9 @@
   <div class="post-list" v-if="data.posts.length > 0" v-for="post of data.posts" :key="post.id">
     <Post :post-id="post.id" :first-name="post.User.firstName" :last-name="post.User.lastName" :role="post.User.role"
       :created-at="post.createdAt" :user-edit="post.userEdit" :text-content="post.text_content"
-      :image-url="post.image_url" :likes="post.likes" :user-id="post.userId" :display-state="post.displayState" @get-posts="getPosts" @liked="post.likes++"
-      @unliked="post.likes--" @display-edit="post.displayState = !post.displayState"></Post>
+      :image-url="post.image_url" :likes="post.likes" :user-id="post.userId" :display-state="post.displayState"
+      @get-posts="getPosts" @liked="post.likes++" @unliked="post.likes--"
+      @display-edit="post.displayState = !post.displayState"></Post>
   </div>
   <div v-else>
     <p>Aucun post n'a encore été créé.</p>
@@ -13,8 +14,9 @@
 <script setup>
 import axios from "axios"
 import moment from 'moment'
-import { data } from "@/store/index"
+import { data, needRefresh } from "@/store/index"
 import Post from "@/components/Posts/Post.vue"
+import { watch } from 'vue'
 
 const getPosts = async () => {
   axios.get("http://127.0.0.1:3000/api/posts")
@@ -29,12 +31,23 @@ const getPosts = async () => {
       })
       data.posts = response.data.reverse()
       data.displayState = false
+      // console.log(isUpdated)
     })
     .catch((err) => {
       console.log(err)
     })
 }
 getPosts()
+console.log(needRefresh)
+
+watch(() => needRefresh.status,(status) => {
+  if (needRefresh.status == true) {
+    getPosts()
+    needRefresh.status = false
+
+  }
+})
+
 
 // const createPost = async () => {
 //   postsForm(axios.post, 'http://127.0.0.1:3000/api/posts')

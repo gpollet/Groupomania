@@ -21,9 +21,9 @@ export const postsForm = (async (axiosMethod, route) => {
     formData
     , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
     .then(() => {
-      // postContent.text_content = null
-      // postContent.image = null
-      // displayEdit.postId = null,
-      //   displayEdit.state = false
+      postContent.text_content = null
+      postContent.image = null
     })
 })
+
+export const needRefresh = reactive({status: false})
