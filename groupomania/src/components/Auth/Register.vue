@@ -1,5 +1,4 @@
 <template>
-  <!-- <h2>Créer un compte</h2> -->
   <form method="post" action="http://127.0.0.1:3000/api/auth/signup">
     <p>
       <label for="email">Email : </label>
@@ -32,7 +31,11 @@ let password
 async function signup() {
   await axios.post("http://127.0.0.1:3000/api/auth/signup", {
     email: this.username, lastName: this.lastName, firstName: this.firstName, password: this.password
-  }).then(() => router.push({ path: "/login" }))
+  })
+  .then(() => router.push({ path: "/login" }))
+  .catch((err) => {
+
+  })
 }
 
 </script>

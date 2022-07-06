@@ -12,11 +12,10 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import Login from "@/components/Auth/Login.vue"
 import Register from "@/components/Auth/Register.vue"
 import router from "@/router";
-import { onMounted } from "vue";
 import { useRoute } from 'vue-router'
 import { user } from '@/store';
 
