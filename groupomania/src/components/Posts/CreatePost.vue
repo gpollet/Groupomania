@@ -8,17 +8,17 @@
     <label for="image">Ajouter une image :</label>
     <input type="file" name="image" accept="image/jpg, image/jpeg, image/png"
       v-on:change="getAddedFile">
+      <slot></slot>
   </form>
 </template>
 
 <script setup>
-import { postContent } from "@/store/index"
-import { reactive, watch } from 'vue'
+import { user, data, postContent, postsForm } from "@/store/index"
+
 
 function getAddedFile(e) {
   postContent.image = e.target.files[0]
 }
-
 </script>
 
 <style scoped lang="scss">

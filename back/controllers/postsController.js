@@ -135,7 +135,7 @@ exports.deletePost = (req, res, next) => {
       }).then((post) => {
         if (req.user.role == 0 && post.userId !== req.user.userId) {
           return next(res.status(401))
-        } else {
+        } else if (post) {
           post
             .destroy()
             .then((post) => {
