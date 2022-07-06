@@ -11,7 +11,7 @@ exports.getAllPosts = (req, res) => {
         model: User,
         attributes: ["firstName", "lastName", "role"],
         required: true,
-      }
+      },
     ],
   })
     .then((posts) => {
@@ -40,7 +40,10 @@ exports.getLikedPost = (req, res) => {
 // Crée un nouveau post avec l'id de l'utilisateur, les informations qu'il saisit sur la page d'envoi, le chemin d'accès à l'image reçue, et initialise le nombre de likes à 0. Array d'utilisateurs ayant liké est donc de facto vide aussi.
 exports.createPost = async (req, res, next) => {
   let imageUrl
-  if (req.body.text_content === "null") {
+  if (
+    req.body.text_content === "null" ||
+    req.body.text_content.length == 0
+  ) {
     return res
       .status(400)
       .json("Le post doit obligatoirement contenir du texte.")
@@ -73,52 +76,61 @@ exports.createPost = async (req, res, next) => {
 
 // Vérifie si un fichier est joint. Si oui, convertit le corps de la requête pour y insérer l'url de l'image, si non met à jour les champs avec les nouvelles informations fournies par l'utilisateur.
 exports.updatePost = (req, res, next) => {
-  Post.findOne({
-    where: { id: req.params.id },
-  })
-    .then((post) => {
-      if (req.user.role == 0 && post.userId !== req.user.userId) {
-        return next(res.status(401))
-      } else {
-        if (req.file) {
-          const imgPath = post.image_url.replace(
-            "http://127.0.0.1:3000",
-            "."
-          )
-          fs.unlink(imgPath, (err) => {
-            if (err) {
-              console.error(err)
-            } else {
-              console.log("Image supprimée")
-            }
-          })
-        }
-        const postObject = req.file
-          ? {
-              userId: post.userId,
-              text_content: req.body.text_content,
-              image_url: `${req.protocol}://${req.get(
-                "host"
-              )}/images/${req.file.filename}`,
-              userEdit: Date.now(),
-            }
-          : {
-              userId: post.userId,
-              text_content: req.body.text_content,
-              image_url: post.imageUrl,
-              userEdit: Date.now(),
-            }
-        Post.upsert({
-          id: req.params.id,
-          ...postObject,
-        })
-          .then(() =>
-            res.status(200).json({ message: "Post mis à jour." })
-          )
-          .catch((error) => res.status(400).json({ error }))
-      }
+  if (
+    req.body.text_content === "null" ||
+    req.body.text_content.length == 0
+  ) {
+    return res
+      .status(400)
+      .json("Le post doit obligatoirement contenir du texte.")
+  } else {
+    Post.findOne({
+      where: { id: req.params.id },
     })
-    .catch((error) => res.status(400).json({ error }))
+      .then((post) => {
+        if (req.user.role == 0 && post.userId !== req.user.userId) {
+          return next(res.status(401))
+        } else {
+          if (req.file) {
+            const imgPath = post.image_url.replace(
+              "http://127.0.0.1:3000",
+              "."
+            )
+            fs.unlink(imgPath, (err) => {
+              if (err) {
+                console.error(err)
+              } else {
+                console.log("Image supprimée")
+              }
+            })
+          }
+          const postObject = req.file
+            ? {
+                userId: post.userId,
+                text_content: req.body.text_content,
+                image_url: `${req.protocol}://${req.get(
+                  "host"
+                )}/images/${req.file.filename}`,
+                userEdit: Date.now(),
+              }
+            : {
+                userId: post.userId,
+                text_content: req.body.text_content,
+                image_url: post.imageUrl,
+                userEdit: Date.now(),
+              }
+          Post.upsert({
+            id: req.params.id,
+            ...postObject,
+          })
+            .then(() =>
+              res.status(200).json({ message: "Post mis à jour." })
+            )
+            .catch((error) => res.status(400).json({ error }))
+        }
+      })
+      .catch((error) => res.status(400).json({ error }))
+  }
 }
 
 // Trouve le post ayant un id correspondant à l'id de la requête, et le supprime.

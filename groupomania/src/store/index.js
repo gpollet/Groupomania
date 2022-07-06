@@ -19,7 +19,9 @@ export const postsForm = (async (axiosMethod, route, newContent) => {
   formData.append('image', newContent.imageUrl)
   await axiosMethod(`${route}`,
     formData
-    , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
+    , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } }).then(() => {
+      needRefresh.status = true
+    })
 })
 
 export const needRefresh = reactive({status: false})

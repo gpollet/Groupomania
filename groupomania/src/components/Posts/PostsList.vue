@@ -43,61 +43,8 @@ watch(() => needRefresh.status, (status) => {
   if (needRefresh.status == true) {
     getPosts()
     needRefresh.status = false
-
   }
 })
-
-
-// const createPost = async () => {
-//   postsForm(axios.post, 'http://127.0.0.1:3000/api/posts')
-// }
-
-// function displayEditForm(postId) {
-//   displayEdit.postId = postId
-//   displayEdit.state = !displayEdit.state
-// }
-
-// function editPost(postId) {
-//   postsForm(axios.put, `http://127.0.0.1:3000/api/posts/${postId}`)
-// }
-
-// async function likePost(post) {
-//   if (user.userId) {
-//     // Vérifie si utilisateur a déjà liké, pour adapter la valeur du like dans la requête
-//     await axios.get(`http://127.0.0.1:3000/api/posts/${post.id}/like`)
-//       .then((res) => {
-//         if (res.data.some(post => post.userId == user.userId)) {
-//           axios.post(`http://127.0.0.1:3000/api/posts/${post.id}/like`,
-//             { userId: user.userId, like: 0 },
-//             { headers: { "Authorization": "Bearer " + user.token } })
-//             .then(() => {
-//               post.likes--
-//             })
-//         } else {
-//           axios.post(`http://127.0.0.1:3000/api/posts/${post.id}/like`,
-//             { userId: user.userId, like: 1 },
-//             { headers: { "Authorization": "Bearer " + user.token } })
-//             .then(() => {
-//               post.likes++
-//             })
-//         }
-//       })
-//       .catch((err) => {
-//         console.log(err)
-//       })
-//   } else {
-//     throw error
-//   }
-// }
-
-// async function deletePost(postId, userId) {
-//   if (user.role == 1 || user.userId && user.userId == userId) {
-//     await axios.delete(`http://127.0.0.1:3000/api/posts/${postId}`, { headers: { "Authorization": `Bearer ${user.token}` } })
-//       .then(() => {
-//         getPosts()
-//       })
-//   }
-// }
 
 </script>
 

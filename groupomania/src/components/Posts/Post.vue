@@ -3,7 +3,7 @@
     <p>{{ firstName }} {{ lastName }} <span v-if="role === 1" class="admin">[Admin] </span><time>({{ createdAt
     }})</time>
     </p>
-    <span class="last-updated" v-if="userEdit && createdAt !== userEdit"><time>Modifié {{
+    <span class="last-updated" v-if="userEdit"><time>Modifié {{
         userEdit
     }}</time></span>
     <p>{{ textContent }}</p>
