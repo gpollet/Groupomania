@@ -13,17 +13,13 @@ export const postContent = reactive({
 
 export const data = reactive({ posts : {}})
 
-export const postsForm = (async (axiosMethod, route) => {
+export const postsForm = (async (axiosMethod, route, newContent) => {
   let formData = new FormData()
-  formData.append('text_content', postContent.text_content)
-  formData.append('image', postContent.image)
+  formData.append('text_content', newContent.textContent)
+  formData.append('image', newContent.imageUrl)
   await axiosMethod(`${route}`,
     formData
     , { headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + user.token } })
-    .then(() => {
-      postContent.text_content = null
-      postContent.image = null
-    })
 })
 
 export const needRefresh = reactive({status: false})

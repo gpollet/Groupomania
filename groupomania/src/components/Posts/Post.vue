@@ -17,7 +17,9 @@
     </p>
     <div v-if="userId == user.userId || user.role == 1">
       <button @click="displayEditForm">Modifier</button>
-      <create-post-form v-if="displayState == true" v-slot:edit-post>
+      <create-post-form v-if="displayState == true" v-slot:edit-post
+        @post-text-edit="(text) => thatContent.textContent = text"
+        @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
         <button type="submit" @click.prevent="editPost(postId)">Modifier le
           post</button>
       </create-post-form>
@@ -47,14 +49,19 @@ defineProps({
   displayState: Boolean
 })
 
-function displayEditForm() {
-  emit('displayEdit')
+let thatContent = {
+  textContent: '',
+  imageUrl: '',
 }
 
 function editPost(postId) {
-  postsForm(axios.put, `http://127.0.0.1:3000/api/posts/${postId}`).then(() => {
+  postsForm(axios.put, `http://127.0.0.1:3000/api/posts/${postId}`, thatContent).then(() => {
     emit('getPosts')
   })
+}
+
+function displayEditForm() {
+  emit('displayEdit')
 }
 
 async function likePost(postId) {

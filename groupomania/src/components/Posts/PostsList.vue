@@ -31,16 +31,15 @@ const getPosts = async () => {
       })
       data.posts = response.data.reverse()
       data.displayState = false
-      // console.log(isUpdated)
     })
     .catch((err) => {
       console.log(err)
     })
 }
 getPosts()
-console.log(needRefresh)
 
-watch(() => needRefresh.status,(status) => {
+
+watch(() => needRefresh.status, (status) => {
   if (needRefresh.status == true) {
     getPosts()
     needRefresh.status = false

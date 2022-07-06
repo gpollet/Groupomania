@@ -4,7 +4,7 @@
     <p>
       <label for="text">Texte : </label>
       <input type="text" name="text" id="new-text-content" placeholder="Votre texte..." @keydown.enter.prevent
-        v-model="postContent.text_content" />
+        v-model="newContent.textContent" v-on:change="emitText"/>
     </p>
     <label for="image">Ajouter une image :</label>
     <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
@@ -16,9 +16,20 @@
 <script setup>
 import { user, data, postContent, postsForm } from "@/store/index"
 
+const emit = defineEmits(['postTextEdit', 'postImageEdit'])
+
+function emitText()  {
+emit('postTextEdit', newContent.textContent)
+}
+
+let newContent = {
+  textContent: '',
+  imageUrl: ''
+}
 
 function getAddedFile(e) {
-  postContent.image = e.target.files[0]
+  newContent.imageUrl = e.target.files[0]
+  emit('postImageEdit', newContent.imageUrl)
 }
 </script>
 
