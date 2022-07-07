@@ -1,29 +1,39 @@
 <template>
   <article>
-    <p>{{ firstName }} {{ lastName }} <span v-if="role === 1" class="admin">[Admin] </span><time>({{ createdAt
-    }})</time>
-    </p>
-    <span class="last-updated" v-if="userEdit"><time>Modifié {{
-        userEdit
-    }}</time></span>
-    <p>{{ textContent }}</p>
-    <img v-if="imageUrl" :src="imageUrl">
-    <p>
+    <div class="post-part">
+      <p class="post-user">{{ firstName }} {{ lastName }} <span v-if="role === 1" class="admin">[Admin]</span><time> ({{
+          createdAt
+      }})</time>
+      </p>
+      <span class="last-updated" v-if="userEdit"><time>Modifié {{
+          userEdit
+      }}</time></span>
+    </div>
+    <div class="post-part">
+      <p>
+        <img v-if="imageUrl" :src="imageUrl">
+      </p>
+      <p>{{ textContent }}</p>
+    </div>
+    <p class="like-count">
       <svg class="fa-like" @click="likePost(postId)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
         <path
           d="M0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84.02L256 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 .0003 232.4 .0003 190.9L0 190.9z" />
       </svg>{{ likes }}
     </p>
+
     <div v-if="userId == user.userId || user.role == 1">
-      <button @click="displayEditForm">Modifier</button>
-      <create-post-form v-if="displayState == true" v-slot:edit-post
+      <button v-if="displayState == false || displayState == null" class="button-style"
+        @click="displayEditForm">Modifier le post</button>
+      <create-post-form :post-text="textContent" v-if="displayState == true" v-slot:edit-post
         @post-text-edit="(text) => thatContent.textContent = text"
         @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
-        <button type="submit" @click.prevent="editPost(postId)">Modifier le
-          post</button>
+        <button class="button-style" @click.prevent="displayEditForm">Annuler les modifications</button>
+        <button class="button-style" type="submit" @click.prevent="editPost(postId)">Envoyer les modifications</button>
       </create-post-form>
-      <button @click="deletePost(postId, userId)">Supprimer le post</button>
+      <button v-if="displayState == false || displayState == null" class="button-style"
+        @click="deletePost(postId, userId)">Supprimer le post</button>
     </div>
   </article>
 </template>
@@ -112,14 +122,36 @@ async function deletePost(postId, userId) {
 }
 
 img {
-  height: 10em;
+  max-height: 20em;
+  // min-width: 30%;
 }
 
 .last-updated {
   color: $tertiary-color;
+  margin-top: 0;
 }
 
 .admin {
-  @include primary;
+  color: $primary-color;
+}
+
+.post-part {
+  border-bottom: 2px $secondary-color solid;
+  width: 100%;
+}
+
+.post-user {
+  font-weight: bold;
+  margin-bottom: 0;
+  font-size: 1.2em;
+}
+
+time {
+  font-weight: normal;
+  font-style: italic;
+}
+
+.like-count {
+  font-size: 1.2em;
 }
 </style>

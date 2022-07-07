@@ -1,12 +1,12 @@
 <template>
-  <p v-if="displayError.status == true" id="login-error">Impossible de vous connecter : identifiants incorrects.</p>
+  <p v-if="displayError.status == true" class="error-message">Impossible de vous connecter : identifiants incorrects.</p>
   <form method="post" action="http://127.0.0.1:3000/api/auth/login">
     <p>
       <label for="email">Email : </label>
       <input type="email" name="email" placeholder="john.doe@email.com" v-model="username" />
     </p>
     <p>
-      <label for="password">Mot de passe : </label><input type="password" name="password" v-model="password" />
+      <label for="password" >Mot de passe : </label><input type="password" name="password" v-model="password" />
     </p>
     <button type="submit" @click.prevent="login()">Se connecter</button>
   </form>
@@ -38,11 +38,3 @@ function login() {
     })
 }
 </script>
-
-
-<style scoped lang="scss">
-#login-error {
-  color: red;
-  font-weight: bold;
-}
-</style>

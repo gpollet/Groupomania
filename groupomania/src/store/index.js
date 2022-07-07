@@ -1,5 +1,7 @@
 import {reactive} from 'vue'
 
+export const loginActive = reactive({ state: true })
+
 export const user = reactive({
   userId: null,
   token: null,

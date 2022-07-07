@@ -1,16 +1,14 @@
 <template>
-  <div class="home">
-    <CreatePost @post-text-edit="(text) => thatContent.textContent = text"
-      @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
-      <template v-slot:form-title>
-        <h2 v-if="user.userId && user.token">Nouveau post</h2>
-      </template>
-      <template v-slot:new-post>
-        <button type="submit" @click.prevent="createPost()">Créer le post</button>
-      </template>
-    </CreatePost>
-    <PostsList></PostsList>
-  </div>
+  <CreatePost @post-text-edit="(text) => thatContent.textContent = text"
+    @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
+    <template v-slot:form-title>
+      <h2 v-if="user.userId && user.token">Nouveau post</h2>
+    </template>
+    <template v-slot:new-post>
+      <button class="button-style" type="submit" @click.prevent="createPost()">Créer le post</button>
+    </template>
+  </CreatePost>
+  <PostsList></PostsList>
 </template>
 
 <script setup>
@@ -29,3 +27,6 @@ const createPost = async () => {
 }
 
 </script>
+
+<style scoped lang="scss">
+</style>

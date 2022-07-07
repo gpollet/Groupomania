@@ -26,7 +26,7 @@ const getPosts = async () => {
       response.data.forEach(element => {
         element.createdAt = moment(element.createdAt).fromNow()
         if (element.userEdit !== null) {
-          element.userEdit = moment(element.updatedAt).fromNow()
+          element.userEdit = moment(element.userEdit).fromNow()
         }
       })
       data.posts = response.data.reverse()
@@ -51,6 +51,11 @@ watch(() => needRefresh.status, (status) => {
 <style scoped lang="scss">
 .post-list {
   border: 2px solid black;
-  @include secondary
+  border-radius: 5px;
+  padding: 1em;
+  margin: 1em;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
