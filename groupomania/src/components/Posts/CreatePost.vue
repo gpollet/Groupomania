@@ -2,8 +2,8 @@
   <div class="post-form">
     <slot name="form-title"></slot>
     <form method="post" action="http://127.0.0.1:3000/api/posts">
+      <label for="text">Texte (requis) : </label>
       <p>
-        <label for="text">Texte (requis) : </label>
         <input type="text" name="text" class="new-text-content" placeholder="Votre texte..." @keydown.enter.prevent
           v-model="newContent.textContent" @change="emitText" />
       </p>
@@ -54,15 +54,28 @@ function getAddedFile(e) {
   width: 60%;
   height: 20em;
   color: black;
-  background-color: rgb(245, 245, 245);
-}
-
-.post-form {
-  text-align: center;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .new-post-buttons {
   text-align: center;
+}
+
+::file-selector-button {
+  margin: 0.6em;
+  text-decoration: none;
+  background-color: white;
+  border: $primary-color 2px solid;
+  border-radius: 10px;
+  padding: 8px;
+  color: $primary-color;
+  cursor: pointer;
+
+  &:hover {
+    font-weight: bold;
+    color: $tertiary-color;
+    border-color: $tertiary-color;
+  }
 }
 
 ::-webkit-file-upload-button {

@@ -2,6 +2,7 @@ const fs = require("fs")
 const Post = require("../models/postModel")
 const Like = require("../models/likeModel")
 const User = require("../models/userModel")
+const sequelize = require("../middleware/db-connect")
 
 // Demande à la DB de renvoyer tous les documents de la collection Post.
 exports.getAllPosts = (req, res) => {
@@ -12,7 +13,11 @@ exports.getAllPosts = (req, res) => {
         attributes: ["firstName", "lastName", "role"],
         required: true,
       },
-    ],
+      {
+        model: Like,
+        attributes: ['userId', 'likedPost'],
+      }
+    ]
   })
     .then((posts) => {
       res.status(200).json(posts)

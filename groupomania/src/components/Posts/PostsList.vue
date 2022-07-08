@@ -3,8 +3,8 @@
     <Post :post-id="post.id" :first-name="post.User.firstName" :last-name="post.User.lastName" :role="post.User.role"
       :created-at="post.createdAt" :user-edit="post.userEdit" :text-content="post.text_content"
       :image-url="post.image_url" :likes="post.likes" :user-id="post.userId" :display-state="post.displayState"
-      @get-posts="getPosts" @liked="post.likes++" @unliked="post.likes--"
-      @display-edit="post.displayState = !post.displayState"></Post>
+      :user-liked="post.Likes" @get-posts="getPosts" @liked="updateLikes('like', post)"
+      @unliked="updateLikes('unlike', post)" @display-edit="post.displayState = !post.displayState"></Post>
   </div>
   <div v-else>
     <p>Aucun post n'a encore été créé.</p>
@@ -14,7 +14,7 @@
 <script setup>
 import axios from "axios"
 import moment from 'moment'
-import { data, needRefresh } from "@/store/index"
+import { data, needRefresh, user, userLikedPosts } from "@/store/index"
 import Post from "@/components/Posts/Post.vue"
 import { watch } from 'vue'
 
@@ -24,6 +24,11 @@ const getPosts = async () => {
       moment.locale(navigator.language)
       // Convertit les dates de la DB pour les afficher dans la langue de l'utilisateur (selon le language de son navigateur)
       response.data.forEach(element => {
+        if (element.Likes.some(likeList => likeList.userId == user.userId)) {
+          element.Likes = 1
+        } else {
+          element.Likes = 0
+        }
         element.createdAt = moment(element.createdAt).fromNow()
         if (element.userEdit !== null) {
           element.userEdit = moment(element.userEdit).fromNow()
@@ -38,6 +43,16 @@ const getPosts = async () => {
 }
 getPosts()
 
+function updateLikes(likeParam, post) {
+  if (likeParam == 'like') {
+    post.likes++
+    post.Likes = 1
+  } else {
+    post.likes--
+    post.Likes = 0
+  }
+
+}
 
 watch(() => needRefresh.status, (status) => {
   if (needRefresh.status == true) {
@@ -57,5 +72,6 @@ watch(() => needRefresh.status, (status) => {
   width: 80%;
   margin-left: auto;
   margin-right: auto;
+  background-color: white;
 }
 </style>

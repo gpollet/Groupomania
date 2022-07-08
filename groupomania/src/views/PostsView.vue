@@ -1,4 +1,4 @@
-<template>
+<template><div class="new-post-form">
   <CreatePost @post-text-edit="(text) => thatContent.textContent = text"
     @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
     <template v-slot:form-title>
@@ -7,7 +7,7 @@
     <template v-slot:new-post>
       <button class="button-style" type="submit" @click.prevent="createPost()">Créer le post</button>
     </template>
-  </CreatePost>
+  </CreatePost></div>
   <PostsList></PostsList>
 </template>
 
@@ -29,4 +29,7 @@ const createPost = async () => {
 </script>
 
 <style scoped lang="scss">
+.new-post-form {
+  text-align: center;
+}
 </style>

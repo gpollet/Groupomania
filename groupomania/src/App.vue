@@ -34,6 +34,10 @@ body,
   color: $tertiary-color;
 }
 
+body {
+  background-color: $secondary-color;
+}
+
 .content {
   flex: 1 0 auto;
 }

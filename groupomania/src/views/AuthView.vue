@@ -51,6 +51,13 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: white;
+  width: 30%;
+  padding: 60px;
+  margin: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  border: $tertiary-color 1px solid;
 
   // align-content: center;
   &::v-deep {

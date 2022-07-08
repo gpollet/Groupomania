@@ -37,7 +37,8 @@ function logout() {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 header {
-  border-bottom: 1px solid $secondary-color;
+  border-bottom: 1px solid $tertiary-color;
+  background-color: white;
 }
 
 nav>a>button {
