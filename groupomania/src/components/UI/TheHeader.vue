@@ -39,6 +39,9 @@ function logout() {
 header {
   border-bottom: 1px solid $tertiary-color;
   background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 nav>a>button {

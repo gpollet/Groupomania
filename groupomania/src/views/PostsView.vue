@@ -3,7 +3,7 @@
     <CreatePost @post-text-edit="(text) => thatContent.textContent = text"
       @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
       <template v-slot:form-title>
-        <h2 v-if="user.userId && user.token">Nouveau post</h2>
+        <h2 v-if="user.userId && user.token">Créer un nouveau post</h2>
       </template>
       <template v-slot:new-post>
         <button class="button-style" type="submit" @click.prevent="createPost()">Créer le post</button>
