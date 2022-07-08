@@ -10,14 +10,17 @@ exports.getAllPosts = (req, res) => {
     include: [
       {
         model: User,
-        attributes: ["firstName", "lastName", "role"],
+        attributes: ["firstName", "lastName"],
         required: true,
       },
       {
         model: Like,
-        attributes: ['userId', 'likedPost'],
-      }
-    ]
+        attributes: ["likedPost"],
+        where: [{ userId: req.user.userId }],
+        required: false,
+      },
+    ],
+    attributes: { exclude: ["updatedAt", "userId"] },
   })
     .then((posts) => {
       res.status(200).json(posts)

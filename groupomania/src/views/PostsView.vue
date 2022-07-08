@@ -41,12 +41,12 @@ const createPost = async () => {
 }
 
 const getPosts = async () => {
-  axios.get("http://127.0.0.1:3000/api/posts")
+  axios.get(`http://127.0.0.1:3000/api/posts?user=${user.userId}`, { headers: { "Authorization": "Bearer " + user.token } })
     .then((response) => {
       moment.locale(navigator.language)
       // Convertit les dates de la DB pour les afficher dans la langue de l'utilisateur (selon le language de son navigateur)
       response.data.forEach(element => {
-        if (element.Likes.some(likeList => likeList.userId == user.userId)) {
+        if (element.Likes.length !== 0) {
           element.Likes = 1
         } else {
           element.Likes = 0
