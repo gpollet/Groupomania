@@ -1,7 +1,6 @@
 <template>
   <article>
     <div class="post-part">
-      <p @click="getLiked(userLiked, postId)">Click me</p>
       <p class="post-user">{{ firstName }} {{ lastName }} <span v-if="role === 1" class="admin">[Admin]</span><time> ({{
           createdAt
       }})</time>
