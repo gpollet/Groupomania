@@ -35,9 +35,9 @@ postSchema.belongsTo(userSchema, {
   targetKey: "id",
 })
 
-postSchema.hasOne(likeSchema, {
+postSchema.hasMany(likeSchema, {
   foreignKey: 'likedPost',
-  targetKey: 'id',
+  sourceKey: 'id',
   onDelete: 'cascade'
 })
 sequelize.sync

@@ -24,10 +24,8 @@ const routes = [
   {
     path: "/signup",
     name: "signup",
-    component: function() {
-      return import(
-        "@/views/AuthView.vue"
-      )
+    component: function () {
+      return import("@/views/AuthView.vue")
     },
   },
 ]
