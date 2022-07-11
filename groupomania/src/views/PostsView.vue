@@ -1,4 +1,5 @@
 <template>
+  <h1>Fil d'actualité</h1>
   <div class="new-post-form">
     <CreatePost @post-text-edit="(text) => thatContent.textContent = text"
       @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
@@ -6,7 +7,8 @@
         <h2 v-if="user.userId && user.token">Créer un nouveau post</h2>
       </template>
       <template v-slot:new-post>
-        <button class="button-style" type="submit" @click.prevent="createPost()">Créer le post</button>
+        <button aria-label="Créer le post" class="button-style" type="submit" @click.prevent="createPost()">Créer le
+          post</button>
       </template>
     </CreatePost>
   </div>
@@ -86,6 +88,10 @@ watch(() => needRefresh.status, (status) => {
 </script>
 
 <style scoped lang="scss">
+h1 {
+  text-align: center;
+}
+
 .new-post-form {
   text-align: center;
 

@@ -4,11 +4,11 @@
     <form method="post" action="http://127.0.0.1:3000/api/posts">
       <label for="text">Texte (requis) : </label>
       <p>
-        <input type="text" name="text" class="new-text-content" placeholder="Votre texte..." @keydown.enter.prevent
+        <input id="text" type="text" name="text" class="new-text-content" placeholder="Votre texte..." @keydown.enter.prevent
           v-model="newContent.textContent" @change="emitText" />
       </p>
       <div class="new-post-buttons"><label for="image">Ajouter une image : </label>
-        <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
+        <input id="image" type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
         <slot name="new-post"></slot>
       </div>
       <slot name="edit-post"></slot>

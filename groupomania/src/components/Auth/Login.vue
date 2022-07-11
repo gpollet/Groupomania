@@ -3,10 +3,11 @@
   <form method="post" action="http://127.0.0.1:3000/api/auth/login">
     <p>
       <label for="email">Email : </label>
-      <input type="email" name="email" placeholder="john.doe@email.com" v-model="username" />
+      <input type="email" id="email" name="email" placeholder="john.doe@email.com" v-model="username" />
     </p>
     <p>
-      <label for="password" >Mot de passe : </label><input type="password" name="password" v-model="password" />
+      <label for="password" >Mot de passe : </label>
+      <input id="password" type="password" name="password" v-model="password" />
     </p>
     <button type="submit" @click.prevent="login()">Se connecter</button>
   </form>

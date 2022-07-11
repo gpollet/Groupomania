@@ -3,18 +3,19 @@
     <p class="error-message" v-if="email.status == false">Cet email n'est pas reconnu.</p>
     <p>
       <label for="email">Email Groupomania : </label>
-      <input type="email" name="email" placeholder="john.doe@email.com" v-model="username" />
+      <input id="email" type="email" name="email" placeholder="john.doe@email.com" v-model="username" />
     </p>
     <p>
       <label for="lastName">Nom : </label>
-      <input type="text" name="lastName" placeholder="Doe" v-model="lastName" />
+      <input id="lastName" type="text" name="lastName" placeholder="Doe" v-model="lastName" />
     </p>
     <p>
       <label for="firstName">Prénom : </label>
-      <input type="text" name="firstName" placeholder="John" v-model="firstName" />
+      <input id="firstName" type="text" name="firstName" placeholder="John" v-model="firstName" />
     </p>
     <p>
-      <label for="password">Mot de passe : </label><input type="password" name="password" v-model="password" />
+      <label for="password">Mot de passe : </label>
+      <input id="password" type="password" name="password" v-model="password" />
     </p>
     <button type="submit" @click.prevent="signup()" @keypress.enter="signup()">Créer un
       compte</button>
@@ -48,5 +49,4 @@ async function signup() {
 </script>
 
 <style scoped lang="scss">
-
 </style>
