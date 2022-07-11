@@ -1,18 +1,33 @@
+@use "sass:map";
+
 $primary-color: #fd2d01;
 $secondary-color: #ffd7d7;
 $tertiary-color: #4e5166;
 
-@mixin primary {
-  color: white;
-  background-color: $primary-color;
+$breakpoints-min: (
+  tablet: 767px,
+  desktop: 992px,
+);
+
+$breakpoints-max: (
+  phone: 766px,
+  tablet: 991px,
+);
+
+@mixin phone {
+  @media screen and (max-width: map.get($breakpoints-max, phone)) {
+    @content;
+  }
 }
 
-@mixin secondary {
-  color: black;
-  background-color: $secondary-color;
+@mixin tablet {
+  @media screen and (min-width: map.get($breakpoints-min, tablet)) and (max-width: map.get($breakpoints-max, tablet)) {
+    @content;
+  }
 }
 
-@mixin tertiary {
-  color: white;
-  background-color: $tertiary-color;
+@mixin desktop {
+  @media screen and (min-width: map.get($breakpoints-min, desktop)) {
+    @content;
+  }
 }

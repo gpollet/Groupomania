@@ -43,6 +43,10 @@ body {
 }
 
 main {
+  @include phone {
+    margin-left: 0.3em;
+    margin-right: 0.3em;
+  }
   margin-left: 5em;
   margin-right: 5em;
 }
@@ -52,7 +56,7 @@ a {
 }
 
 .button-style {
-  margin: 0.6em;
+  margin-right: 0.6em;
   text-decoration: none;
   background-color: white;
   border: $primary-color 2px solid;

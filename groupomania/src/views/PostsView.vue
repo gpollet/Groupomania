@@ -10,7 +10,7 @@
       </template>
     </CreatePost>
   </div>
-  <div class="post-list" v-if="data.posts.length > 0" v-for="post of data.posts" :key="post.id">
+  <div class="post-card" v-if="data.posts.length > 0" v-for="post of data.posts" :key="post.id">
     <Post :post-id="post.id" :first-name="post.User.firstName" :last-name="post.User.lastName" :role="post.User.role"
       :created-at="post.createdAt" :user-edit="post.userEdit" :text-content="post.text_content"
       :image-url="post.image_url" :likes="post.likes" :user-id="post.userId" :display-state="post.displayState"
@@ -88,16 +88,24 @@ watch(() => needRefresh.status, (status) => {
 <style scoped lang="scss">
 .new-post-form {
   text-align: center;
+
+  & button {
+    margin-left: 0.6em;
+  }
 }
 
-.post-list {
+.post-card {
   border: 2px solid black;
   border-radius: 5px;
   padding: 1em;
   margin: 1em;
-  width: 80%;
+  width: 85%;
   margin-left: auto;
   margin-right: auto;
   background-color: white;
+
+  @include phone {
+    margin-bottom: 1em;
+  }
 }
 </style>

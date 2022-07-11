@@ -46,3 +46,7 @@ async function signup() {
   }
 }
 </script>
+
+<style scoped lang="scss">
+
+</style>

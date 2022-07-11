@@ -42,10 +42,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
 
-nav>a>button {
-  font-size: 1.2em;
 }
 
 a {
@@ -64,6 +61,7 @@ a {
   & button {
     background-color: white;
     border: 0;
+    font-size: 1.2em;
   }
 }
 
@@ -76,7 +74,7 @@ a {
 }
 
 img {
-  width: 25%;
+  width: 200px;
   margin: 1em;
   margin-left: 2em;
 }
@@ -84,5 +82,28 @@ img {
 .active_button {
   color: $primary-color;
   font-weight: bold;
+}
+
+*> {
+  @include phone {
+    header {
+      flex-wrap: wrap;
+    }
+
+    img {
+      margin: 0.8em;
+    }
+
+    a {
+      margin: 0;
+      font-size: 1.18em;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    nav {
+      display: flex;
+    }
+  }
 }
 </style>

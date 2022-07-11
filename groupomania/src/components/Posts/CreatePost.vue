@@ -56,10 +56,25 @@ function getAddedFile(e) {
   color: black;
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
+
+  @include phone {
+    width: 80%;
+  }
+
+  @include tablet {
+    width: 80%;
+  }
 }
 
 .new-post-buttons {
-  text-align: center;
+
+  @include phone {
+    text-align: left;
+
+    & label {
+      margin-left: 0.8em;
+    }
+  }
 }
 
 ::file-selector-button {
@@ -94,5 +109,9 @@ function getAddedFile(e) {
     color: $tertiary-color;
     border-color: $tertiary-color;
   }
+}
+
+form {
+  margin-bottom: 1em;
 }
 </style>
