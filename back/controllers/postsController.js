@@ -21,7 +21,7 @@ exports.getAllPosts = (req, res) => {
       },
     ],
     attributes: { exclude: ["updatedAt"] },
-    order: [['createdAt', 'DESC']]
+    order: [["createdAt", "DESC"]],
   })
     .then((posts) => {
       res.status(200).json(posts)
@@ -104,7 +104,6 @@ exports.updatePost = (req, res, next) => {
             const imgPath = post.image_url.replace(
               "http://127.0.0.1:3000",
               "."
-              // TODO: Chemin relatif plutôt qu'absolu
             )
             fs.unlink(imgPath, (err) => {
               if (err) {
@@ -216,11 +215,6 @@ exports.likePost = (req, res, next) => {
             userId: req.user.userId,
             likedPost: req.params.id,
           })
-          // .catch((error) => {
-          //   res.status(400).json({
-          //     error: error,
-          //   })
-          // })
         }
       } else if (req.body.like == 0) {
         const dislike = await Like.findOne({
