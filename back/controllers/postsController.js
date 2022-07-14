@@ -20,7 +20,8 @@ exports.getAllPosts = (req, res) => {
         required: false,
       },
     ],
-    attributes: { exclude: ["updatedAt", "userId"] },
+    attributes: { exclude: ["updatedAt"] },
+    order: [['createdAt', 'DESC']]
   })
     .then((posts) => {
       res.status(200).json(posts)
@@ -103,6 +104,7 @@ exports.updatePost = (req, res, next) => {
             const imgPath = post.image_url.replace(
               "http://127.0.0.1:3000",
               "."
+              // TODO: Chemin relatif plutôt qu'absolu
             )
             fs.unlink(imgPath, (err) => {
               if (err) {

@@ -113,8 +113,7 @@ h1 {
     }
 
     & .error-message {
-      justify-content: center;
-      color: red;
+      color: $primary-color;
       font-weight: bold;
     }
   }

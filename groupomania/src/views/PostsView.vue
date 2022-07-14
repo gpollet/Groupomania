@@ -39,11 +39,11 @@ let thatContent = {
 }
 
 const createPost = async () => {
-  postsForm(axios.post, 'http://127.0.0.1:3000/api/posts', thatContent)
+  await postsForm(axios.post, 'http://127.0.0.1:3000/api/posts', thatContent)
 }
 
 const getPosts = async () => {
-  axios.get(`http://127.0.0.1:3000/api/posts?user=${user.userId}`, { headers: { "Authorization": "Bearer " + user.token } })
+  axios.get(`http://127.0.0.1:3000/api/posts?`, { headers: { "Authorization": "Bearer " + user.token } })
     .then((response) => {
       moment.locale(navigator.language)
       // Convertit les dates de la DB pour les afficher dans la langue de l'utilisateur (selon le language de son navigateur)
@@ -58,7 +58,7 @@ const getPosts = async () => {
           element.userEdit = moment(element.userEdit).fromNow()
         }
       })
-      data.posts = response.data.reverse()
+      data.posts = response.data
       data.displayState = false
     })
     .catch((err) => {
