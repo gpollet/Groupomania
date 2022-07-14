@@ -5,10 +5,10 @@
       <label for="text">Texte (requis) : </label>
       <p>
         <input id="text" type="text" name="text" class="new-text-content" placeholder="Votre texte..." @keydown.enter.prevent
-          v-model="newContent.textContent" @change="emitText" />
+          v-model="newContent.textContent" @change="emitText" @load="emitText" />
       </p>
       <div class="new-post-buttons"><label for="image">Ajouter une image : </label>
-        <input id="image" type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
+        <input id="image" type="file" name="image" accept="image/jpg, image/jpeg, image/png" @change="getAddedFile">
         <slot name="new-post"></slot>
       </div>
       <slot name="edit-post"></slot>
