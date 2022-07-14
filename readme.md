@@ -6,9 +6,9 @@
 
 3. Dans le terminal :
 
-	4. Dans le dossier "back", saisir "npm install". Une fois l'installation des modules effectée, lancer la commande "nodemon".
+	1. Dans le dossier "back", saisir "npm install". Une fois l'installation des modules effectée, lancer la commande "nodemon".
 
-	5. Dans le dossier "groupomania", saisir "npm install". Une fois l'installation des modules effectée, lancer la commande "npm run serve".
+	2. Dans le dossier "groupomania", saisir "npm install". Une fois l'installation des modules effectée, lancer la commande "npm run serve".
 
 **Documentation de l'API :**
 
@@ -20,4 +20,4 @@
 | POST  | /api/posts  | { text_content : String, image : File} |  { message : String } |
 | PUT  |  /api/posts/ :id |  Posts as JSON or { text_content : String, image : File} | { message : String }  |
 |  DELETE |  /api/posts/ :id |   |  { message : String } |
-|  POST |  /api/posts/ :id/like | { userId : Number, like : Number }  |   | |
+|  POST |  /api/posts/ :id/like | { userId : Number, like : Number }  | /  |
