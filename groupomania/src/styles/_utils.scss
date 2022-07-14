@@ -1,0 +1,35 @@
+@use "sass:map";
+
+// $primary-color: #fd2d01;
+// Rouge légèrement plus foncé ci-dessous pour rendre le site accessible.
+$primary-color: #ea1c03;
+$secondary-color: #ffd7d7;
+$tertiary-color: #4e5166;
+
+$breakpoints-min: (
+  tablet: 767px,
+  desktop: 992px,
+);
+
+$breakpoints-max: (
+  phone: 766px,
+  tablet: 991px,
+);
+
+@mixin phone {
+  @media screen and (max-width: map.get($breakpoints-max, phone)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (min-width: map.get($breakpoints-min, tablet)) and (max-width: map.get($breakpoints-max, tablet)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: map.get($breakpoints-min, desktop)) {
+    @content;
+  }
+}

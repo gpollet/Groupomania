@@ -52,27 +52,42 @@ h1 {
   flex-direction: column;
   align-items: center;
   background-color: white;
-  width: 30%;
-  padding: 60px;
-  margin: 30px;
+  width: 80%;
+  padding: 0.8em;
+  padding-bottom: 3em;
+  margin: 1.5em;
   margin-left: auto;
   margin-right: auto;
   border: $tertiary-color 1px solid;
 
-  // align-content: center;
+  @include desktop {
+    width: 42%;
+    padding: 3em;
+  }
+
   &::v-deep {
     & form {
+
       display: flex;
       flex-direction: column;
 
       & label {
         padding-right: 1em;
+
+        @include phone {
+          margin-bottom: 0.2em;
+        }
       }
 
       & p {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        @include phone {
+          flex-direction: column;
+          align-items: flex-start;
+        }
       }
 
       & input,
@@ -98,8 +113,7 @@ h1 {
     }
 
     & .error-message {
-      justify-content: center;
-      color: red;
+      color: $primary-color;
       font-weight: bold;
     }
   }

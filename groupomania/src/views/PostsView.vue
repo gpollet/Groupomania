@@ -1,16 +1,18 @@
 <template>
+  <h1>Fil d'actualité</h1>
   <div class="new-post-form">
     <CreatePost @post-text-edit="(text) => thatContent.textContent = text"
       @post-image-edit="(imageUrl) => thatContent.imageUrl = imageUrl">
       <template v-slot:form-title>
-        <h2 v-if="user.userId && user.token">Nouveau post</h2>
+        <h2 v-if="user.userId && user.token">Créer un nouveau post</h2>
       </template>
       <template v-slot:new-post>
-        <button class="button-style" type="submit" @click.prevent="createPost()">Créer le post</button>
+        <button aria-label="Créer le post" class="button-style" type="submit" @click.prevent="createPost()">Créer le
+          post</button>
       </template>
     </CreatePost>
   </div>
-  <div class="post-list" v-if="data.posts.length > 0" v-for="post of data.posts" :key="post.id">
+  <div class="post-card" v-if="data.posts.length > 0" v-for="post of data.posts" :key="post.id">
     <Post :post-id="post.id" :first-name="post.User.firstName" :last-name="post.User.lastName" :role="post.User.role"
       :created-at="post.createdAt" :user-edit="post.userEdit" :text-content="post.text_content"
       :image-url="post.image_url" :likes="post.likes" :user-id="post.userId" :display-state="post.displayState"
@@ -37,16 +39,16 @@ let thatContent = {
 }
 
 const createPost = async () => {
-  postsForm(axios.post, 'http://127.0.0.1:3000/api/posts', thatContent)
+  await postsForm(axios.post, 'http://127.0.0.1:3000/api/posts', thatContent)
 }
 
 const getPosts = async () => {
-  axios.get("http://127.0.0.1:3000/api/posts")
+  axios.get(`http://127.0.0.1:3000/api/posts?`, { headers: { "Authorization": "Bearer " + user.token } })
     .then((response) => {
       moment.locale(navigator.language)
       // Convertit les dates de la DB pour les afficher dans la langue de l'utilisateur (selon le language de son navigateur)
       response.data.forEach(element => {
-        if (element.Likes.some(likeList => likeList.userId == user.userId)) {
+        if (element.Likes.length !== 0) {
           element.Likes = 1
         } else {
           element.Likes = 0
@@ -56,7 +58,7 @@ const getPosts = async () => {
           element.userEdit = moment(element.userEdit).fromNow()
         }
       })
-      data.posts = response.data.reverse()
+      data.posts = response.data
       data.displayState = false
     })
     .catch((err) => {
@@ -86,18 +88,30 @@ watch(() => needRefresh.status, (status) => {
 </script>
 
 <style scoped lang="scss">
-.new-post-form {
+h1 {
   text-align: center;
 }
 
-.post-list {
+.new-post-form {
+  text-align: center;
+
+  & button {
+    margin-left: 0.6em;
+  }
+}
+
+.post-card {
   border: 2px solid black;
   border-radius: 5px;
   padding: 1em;
   margin: 1em;
-  width: 80%;
+  width: 85%;
   margin-left: auto;
   margin-right: auto;
   background-color: white;
+
+  @include phone {
+    margin-bottom: 1em;
+  }
 }
 </style>
