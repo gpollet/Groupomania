@@ -4,11 +4,12 @@
     <form method="post" action="http://127.0.0.1:3000/api/posts">
       <label for="text">Texte (requis) : </label>
       <p>
-        <input id="text" type="text" name="text" class="new-text-content" placeholder="Votre texte..." @keydown.enter.prevent
-          v-model="newContent.textContent" @change="emitText" />
+        <input id="text" type="text" name="text" class="new-text-content" placeholder="Votre texte..."
+          @keydown.enter.prevent v-model="newContent.textContent" @change="emitText" />
+        <!-- TODO: emitText à l'ouverture de l'éditeur -->
       </p>
       <div class="new-post-buttons"><label for="image">Ajouter une image : </label>
-        <input id="image" type="file" name="image" accept="image/jpg, image/jpeg, image/png" v-on:change="getAddedFile">
+        <input id="image" type="file" name="image" accept="image/jpg, image/jpeg, image/png" @change="getAddedFile">
         <slot name="new-post"></slot>
       </div>
       <slot name="edit-post"></slot>
@@ -31,9 +32,11 @@ const props = defineProps({
 })
 
 const getEditedPostText = function (postText) {
-  if (postText && newContent.textContent == null) {
+  if (props.postText && newContent.textContent == null) {
     newContent.textContent = props.postText
+    emitText()
   }
+
 }
 
 getEditedPostText(props.postText)
