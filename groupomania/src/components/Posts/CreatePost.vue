@@ -32,8 +32,11 @@ const props = defineProps({
 })
 
 const getEditedPostText = function (postText) {
-  newContent.textContent = props.postText
-  emitText()
+  if (props.postText && newContent.textContent == null) {
+    newContent.textContent = props.postText
+    emitText()
+  }
+
 }
 
 getEditedPostText(props.postText)
